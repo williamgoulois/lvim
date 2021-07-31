@@ -1,5 +1,5 @@
 --[[
-O is the global options object
+lvim is the global options object
 
 Linters should be
 filled in as strings with either
@@ -7,12 +7,14 @@ a global executable or a path to
 an executable
 ]]
 -- THESE ARE EXAMPLE CONFIGS FEEL FREE TO CHANGE TO WHATEVER YOU WANT
+lvim.debug = false
 
 -- general
-lvim.format_on_save = false
+lvim.format_on_save = true
 lvim.lint_on_save = true
 lvim.colorscheme = "darkplus"
 lvim.leader = "space"
+lvim.line_wrap_cursor_movement = false
 vim.opt.wrap = true
 
 -- After changing plugin config exit and reopen LunarVim, Run :PackerInstall :PackerCompile
@@ -53,25 +55,23 @@ lvim.builtin.treesitter.highlight.enabled = true
 
 -- LSP
 lvim.lsp.diagnostics.virtual_text = false
--- json
+-- schemas
 require("user.json_schemas").setup()
 require("user.yaml_schemas").setup()
 require("user.js_schemas").setup()
--- javascript
-lvim.lang.javascript.linters = { "eslint_d" }
-lvim.lang.javascriptreact.linters = { "eslint_d" }
-lvim.lang.typescript.linters = { "eslint_d" }
-lvim.lang.typescriptreact.linters = { "eslint_d" }
 
 -- Keybindings
-require("utils").add_keymap_insert_mode({ silent = true, expr = true }, {
+require("utils.keymap").load_mode("i", {
 	{ "<right>", "compe#confirm('<CR>')" },
-})
-require("utils").add_keymap_normal_mode({ noremap = true, silent = true }, {
+}, { silent = true, expr = true })
+require("utils.keymap").load_mode("n", {
 	{ "<left>", "<C-w>h" },
 	{ "<down>", "<C-w>j" },
 	{ "<up>", "<C-w>k" },
 	{ "<right>", "<C-w>l" },
+}, {
+	noremap = true,
+	silent = true,
 })
 
 -- Additional Plugins
