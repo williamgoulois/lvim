@@ -22,8 +22,8 @@ lvim.builtin.dashboard.active = true
 lvim.builtin.terminal.active = true
 lvim.builtin.nvimtree.side = "left"
 lvim.builtin.nvimtree.show_icons.git = 0
-lvim.builtin.telescope.defaults.hide_dotfiles = false
-lvim.builtin.telescope.defaults.hidden = false
+lvim.builtin.telescope.defaults.layout_config.prompt_position = "top"
+lvim.builtin.telescope.defaults.sorting_strategy = "ascending"
 
 local actions = require("telescope.actions")
 lvim.builtin.telescope.defaults.mappings.i["<ESC>"] = actions.close
@@ -51,7 +51,7 @@ lvim.builtin.dashboard.footer = { "Welcome to LunarVim" }
 -- if you don't want all the parsers change this to a table of the ones you want
 lvim.builtin.treesitter.ensure_installed = "maintained"
 lvim.builtin.treesitter.ignore_install = { "haskell" }
-lvim.builtin.treesitter.highlight.enabled = true
+lvim.builtin.treesitter.highlight.enabled = false
 
 -- LSP
 lvim.lsp.diagnostics.virtual_text = false
@@ -61,18 +61,26 @@ require("user.yaml_schemas").setup()
 require("user.js_schemas").setup()
 
 -- Keybindings
-require("utils.keymap").load_mode("i", {
-	{ "<right>", "compe#confirm('<CR>')" },
-}, { silent = true, expr = true })
-require("utils.keymap").load_mode("n", {
-	{ "<left>", "<C-w>h" },
-	{ "<down>", "<C-w>j" },
-	{ "<up>", "<C-w>k" },
-	{ "<right>", "<C-w>l" },
-}, {
-	noremap = true,
-	silent = true,
-})
+vim.api.nvim_set_keymap("n", "<Left>", "<C-w>h", { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "<Down>", "<C-w>j", { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "<Up>", "<C-w>k", { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "<Right>", "<C-w>l", { noremap = true, silent = true })
+
+vim.api.nvim_set_keymap("i", "<right>", "compe#confirm('<CR>')", { silent = true, expr = true })
+
+-- Whichkey custom keymaps
+lvim.builtin.which_key.mappings["ss"] = {
+	"<cmd>lua require'spectre'.open()<CR>",
+	"Spectre",
+}
+lvim.builtin.which_key.mappings["si"] = {
+	"<cmd>lua require'spectre'.open_file_search()<CR>",
+	"Spectre opened file",
+}
+lvim.builtin.which_key.vmappings["s"] = {
+	"<cmd>lua require'spectre'.open_visual({select_word=true})<CR>",
+	"Spectre selected word",
+}
 
 -- Additional Plugins
 lvim.plugins = {
