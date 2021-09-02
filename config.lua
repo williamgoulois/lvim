@@ -8,6 +8,7 @@ an executable
 ]]
 -- THESE ARE EXAMPLE CONFIGS FEEL FREE TO CHANGE TO WHATEVER YOU WANT
 lvim.debug = false
+lvim.log.level = "warn"
 
 -- general
 lvim.format_on_save = true
@@ -55,6 +56,7 @@ lvim.builtin.treesitter.highlight.enabled = false
 
 -- LSP
 lvim.lsp.diagnostics.virtual_text = false
+lvim.lang.tailwindcss.lsp.active = true
 -- schemas
 require("user.json_schemas").setup()
 require("user.yaml_schemas").setup()
