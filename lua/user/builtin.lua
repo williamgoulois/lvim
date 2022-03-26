@@ -152,6 +152,10 @@ M.config = function()
     lvim.keys.insert_mode["<M-\\>"] = { "<Cmd>vertical Copilot panel<CR>", { silent = true } }
     lvim.builtin.cmp.mapping["<Tab>"] = cmp.mapping(M.tab, { "i", "c" })
     lvim.builtin.cmp.mapping["<S-Tab>"] = cmp.mapping(M.shift_tab, { "i", "c" })
+  else
+    lvim.builtin.cmp.mapping["<Tab>"] = cmp.mapping(M.tab, { "i", "s", "c" })
+    lvim.builtin.cmp.mapping["<S-Tab>"] = cmp.mapping(M.shift_tab, { "i", "s", "c" })
+    lvim.builtin.cmp.mapping["<Right>"] = cmp.mapping(M.enter, { "i", "s", "c" })
   end
 
   -- Comment
@@ -321,6 +325,7 @@ M.config = function()
       error = kind.icons.error,
     },
   }
+  lvim.builtin.nvimtree.setup.view.adaptive_size = true
   lvim.builtin.nvimtree.on_config_done = function(_)
     lvim.builtin.which_key.mappings["e"] = { "<cmd>NvimTreeToggle<CR>", " Explorer" }
   end
@@ -329,7 +334,8 @@ M.config = function()
   -- Project
   -- =========================================
   lvim.builtin.project.active = true
-  lvim.builtin.project.detection_methods = { "lsp", "pattern" }
+  lvim.builtin.project.detection_methods = { "pattern" }
+  lvim.builtin.project.patterns = { ".git", "_darcs", ".hg", ".bzr", ".svn", "Makefile" }
 
   -- Theme
   -- =========================================
@@ -462,8 +468,10 @@ M.config = function()
     preview = { " ", "│", " ", "▌", "▌", "╮", "╯", "▌" },
   }
   lvim.builtin.telescope.defaults.selection_caret = "  "
+  lvim.builtin.telescope.defaults.sorting_strategy = "ascending"
   lvim.builtin.telescope.defaults.cache_picker = { num_pickers = 3 }
   lvim.builtin.telescope.defaults.layout_strategy = "horizontal"
+  vim.tbl_extend("force", lvim.builtin.telescope.defaults, { preview = { timeout = 1000 } })
   lvim.builtin.telescope.defaults.file_ignore_patterns = {
     "vendor/*",
     "%.lock",
@@ -478,6 +486,8 @@ M.config = function()
     "%.otf",
     "%.ttf",
     ".git/",
+    ".yarn/",
+    "^%.next/",
     "%.webp",
     ".dart_tool/",
     ".github/",
@@ -521,8 +531,9 @@ M.config = function()
   local actions = require "telescope.actions"
   lvim.builtin.telescope.defaults.mappings = {
     i = {
-      ["<c-c>"] = require("telescope.actions").close,
-      ["<c-y>"] = require("telescope.actions").which_key,
+      ["<esc>"] = actions.close,
+      ["<c-c>"] = actions.close,
+      ["<c-y>"] = actions.which_key,
       ["<tab>"] = actions.toggle_selection + actions.move_selection_next,
       ["<s-tab>"] = actions.toggle_selection + actions.move_selection_previous,
       ["<cr>"] = user_telescope.multi_selection_open,
@@ -612,6 +623,54 @@ end
 
 function M.tab(fallback)
   local methods = require("lvim.core.cmp").methods
+  local luasnip = require "luasnip"
+  if vim.api.nvim_get_mode().mode == "c" then
+    fallback()
+  elseif methods.jumpable() then
+    luasnip.jump(1)
+  elseif methods.check_backspace() then
+    fallback()
+  else
+    fallback()
+  end
+end
+
+function M.shift_tab(fallback)
+  local methods = require("lvim.core.cmp").methods
+  local luasnip = require "luasnip"
+  if vim.api.nvim_get_mode().mode == "c" then
+    fallback()
+  elseif methods.jumpable(-1) then
+    luasnip.jump(-1)
+  elseif methods.check_backspace() then
+    fallback()
+  else
+    fallback()
+  end
+end
+
+function M.enter(fallback)
+  local methods = require("lvim.core.cmp").methods
+  local cmp = require "cmp"
+  local luasnip = require "luasnip"
+  if cmp.visible() and cmp.confirm(lvim.builtin.cmp.confirm_opts) then
+    if methods.jumpable() then
+      luasnip.jump(1)
+    end
+    return
+  end
+
+  if methods.jumpable() then
+    if not luasnip.jump(1) then
+      fallback()
+    end
+  else
+    fallback()
+  end
+end
+
+function M.tab_copilot(fallback)
+  local methods = require("lvim.core.cmp").methods
   local cmp = require "cmp"
   local luasnip = require "luasnip"
   local copilot_keys = vim.fn["copilot#Accept"]()
@@ -634,7 +693,7 @@ function M.tab(fallback)
   end
 end
 
-function M.shift_tab(fallback)
+function M.shift_tab_copilot(fallback)
   local methods = require("lvim.core.cmp").methods
   local luasnip = require "luasnip"
   local cmp = require "cmp"

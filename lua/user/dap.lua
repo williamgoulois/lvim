@@ -170,31 +170,50 @@ M.config = function()
     end
   end
 
+  dap.adapters.node2 = {
+    type = "executable",
+    command = "node",
+    args = { os.getenv "HOME" .. "/dev/microsoft/vscode-node-debug2/out/src/nodeDebug.js" },
+  }
+  dap.adapters.chrome = {
+    type = "executable",
+    command = "node",
+    args = { os.getenv "HOME" .. "/dev/microsoft/vscode-chrome-debug/out/src/chromeDebug.js" },
+  }
+
   dap.configurations.typescript = {
     {
       type = "node2",
       name = "node attach",
       request = "attach",
-      program = "${file}",
+      -- program = "${file}",
       cwd = vim.fn.getcwd(),
       sourceMaps = true,
-      protocol = "inspector",
+      -- protocol = "inspector",
+      processId = require("dap.utils").pick_process,
     },
     {
       type = "chrome",
       name = "Debug with Chrome",
       request = "attach",
+      -- TODO: which one works ?
+      -- request = "launch",
       program = "${file}",
-      -- cwd = "${workspaceFolder}",
-      -- protocol = "inspector",
+      cwd = vim.fn.getcwd(),
+      sourceMaps = true,
+      protocol = "inspector",
       port = 9222,
       webRoot = "${workspaceFolder}",
+      -- cwd = "${workspaceFolder}",
+      -- protocol = "inspector",
+      -- port = 9222,
+      -- webRoot = "${workspaceFolder}",
       -- sourceMaps = true,
-      sourceMapPathOverrides = {
-        -- Sourcemap override for nextjs
-        ["webpack://_N_E/./*"] = "${webRoot}/*",
-        ["webpack:///./*"] = "${webRoot}/*",
-      },
+      -- sourceMapPathOverrides = {
+      --   -- Sourcemap override for nextjs
+      --   ["webpack://_N_E/./*"] = "${webRoot}/*",
+      --   ["webpack:///./*"] = "${webRoot}/*",
+      -- },
     },
     {
       name = "Debug with Firefox",
@@ -285,6 +304,17 @@ M.config = function()
       console = "integratedTerminal",
       internalConsoleOptions = "neverOpen",
     },
+		{
+			name= "[AOC]Current TS File",
+			type= "node2",
+			request= "launch",
+			args= {"${relativeFile}"},
+      cwd = vim.fn.getcwd(),
+      sourceMaps = true,
+      protocol = "inspector",
+			runtimeArgs= { "--nolazy", "-r", "ts-node/register" },
+			customDescriptionGenerator= "function (def) { if (this.toString) { const _v = this.toString(); if (_v.indexOf(\"[object Object]\") < 0) return _v; } return def; }"
+		}
   }
 
   dap.configurations.typescriptreact = dap.configurations.typescript

@@ -8,7 +8,7 @@ M.config = function()
     val = require("user.banners").dashboard(),
     opts = {
       position = "center",
-      hl = "Comment",
+      hl = "Directory",
     },
   }
 
