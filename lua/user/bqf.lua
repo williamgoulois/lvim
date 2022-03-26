@@ -20,7 +20,7 @@ M.config = function()
       filter = "F",
     },
     preview = {
-      auto_preview = false,
+      auto_preview = true,
       show_title = true,
       delay_syntax = 50,
       wrap = false,

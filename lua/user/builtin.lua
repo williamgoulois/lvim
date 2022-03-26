@@ -217,6 +217,10 @@ M.config = function()
     lvim.keys.insert_mode["<M-\\>"] = { "<Cmd>vertical Copilot panel<CR>", { silent = true } }
     lvim.builtin.cmp.mapping["<Tab>"] = cmp.mapping(M.tab, { "i", "c" })
     lvim.builtin.cmp.mapping["<S-Tab>"] = cmp.mapping(M.shift_tab, { "i", "c" })
+  else
+    lvim.builtin.cmp.mapping["<Tab>"] = cmp.mapping(M.tab, { "i", "s", "c" })
+    lvim.builtin.cmp.mapping["<S-Tab>"] = cmp.mapping(M.shift_tab, { "i", "s", "c" })
+    lvim.builtin.cmp.mapping["<Right>"] = cmp.mapping(M.enter, { "i", "s", "c" })
   end
 
   -- Comment
@@ -346,6 +350,7 @@ M.config = function()
       error = kind.icons.error,
     },
   }
+  lvim.builtin.nvimtree.setup.view.adaptive_size = true
   if lvim.builtin.tree_provider == "nvimtree" then
     lvim.builtin.nvimtree.on_config_done = function(_)
       lvim.builtin.which_key.mappings["e"] = { "<cmd>NvimTreeToggle<CR>", " Explorer" }
@@ -356,7 +361,8 @@ M.config = function()
   -- Project
   -- =========================================
   lvim.builtin.project.active = true
-  lvim.builtin.project.detection_methods = { "lsp", "pattern" }
+  lvim.builtin.project.detection_methods = { "pattern" }
+  lvim.builtin.project.patterns = { ".git", "_darcs", ".hg", ".bzr", ".svn", "Makefile" }
 
   -- Theme
   -- =========================================
@@ -489,8 +495,10 @@ M.config = function()
     preview = { " ", "│", " ", "▌", "▌", "╮", "╯", "▌" },
   }
   lvim.builtin.telescope.defaults.selection_caret = "  "
+  lvim.builtin.telescope.defaults.sorting_strategy = "ascending"
   lvim.builtin.telescope.defaults.cache_picker = { num_pickers = 3 }
   lvim.builtin.telescope.defaults.layout_strategy = "horizontal"
+  vim.tbl_extend("force", lvim.builtin.telescope.defaults, { preview = { timeout = 1000 } })
   lvim.builtin.telescope.defaults.file_ignore_patterns = {
     "vendor/*",
     "%.lock",
@@ -505,6 +513,8 @@ M.config = function()
     "%.otf",
     "%.ttf",
     ".git/",
+    ".yarn/",
+    "^%.next/",
     "%.webp",
     ".dart_tool/",
     ".github/",
@@ -548,8 +558,9 @@ M.config = function()
   local actions = require "telescope.actions"
   lvim.builtin.telescope.defaults.mappings = {
     i = {
-      ["<c-c>"] = require("telescope.actions").close,
-      ["<c-y>"] = require("telescope.actions").which_key,
+      ["<esc>"] = actions.close,
+      ["<c-c>"] = actions.close,
+      ["<c-y>"] = actions.which_key,
       ["<tab>"] = actions.toggle_selection + actions.move_selection_next,
       ["<s-tab>"] = actions.toggle_selection + actions.move_selection_previous,
       ["<cr>"] = user_telescope.multi_selection_open,
@@ -662,7 +673,7 @@ function M.tab(fallback)
   end
 end
 
-function M.shift_tab(fallback)
+function M.shift_tab_copilot(fallback)
   local methods = require("lvim.core.cmp").methods
   local luasnip = require "luasnip"
   if cmp.visible() then

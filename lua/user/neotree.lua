@@ -37,7 +37,7 @@ M.config = function()
       width = 30,
     },
     filesystem = {
-      group_empty_dirs = true,
+      group_empty_dirs = false,
       filtered_items = {
         visible = false,
         hide_dotfiles = true,
@@ -54,7 +54,7 @@ M.config = function()
       },
       window = {
         mappings = {
-          ["h"] = "navigate_up",
+          ["h"] = "close_node",
           ["l"] = "open",
         },
       },

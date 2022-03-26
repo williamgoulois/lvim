@@ -1,8 +1,12 @@
+-- Current neovim commit https://github.com/neovim/neovim/commit/3098064f332ffbc59c342545402e2d2da798a458
+--
+
 -- Neovim
 -- =========================================
+lvim.format_on_save = true
 lvim.leader = " "
-lvim.colorscheme = "tokyonight" -- set to a custom theme
-lvim.builtin.time_based_themes = true -- set false to use your own configured theme
+lvim.colorscheme = "darkplus" -- set to a custom theme
+lvim.builtin.time_based_themes = false -- set false to use your own configured theme
 lvim.transparent_window = false -- enable/disable transparency
 lvim.debug = false
 vim.lsp.set_log_level "error"
@@ -85,6 +89,77 @@ end
 
 -- Additional Actions Based on Custom User Config
 -- =========================================
+
+if user and user == "William.Goulois" then
+  lvim.builtin.inlay_hints.active = true
+  lvim.reload_config_on_save = false -- NOTE: i don't like this
+  lvim.builtin.web_programming.active = true
+  lvim.builtin.go_programming.active = false
+  lvim.builtin.python_programming.active = false
+  lvim.builtin.rust_programming.active = false
+
+  -- vim.api.nvim_set_hl(0, "DiffAdd", { fg = "#87afff", bg = "#262626", reverse = true })
+  -- vim.api.nvim_set_hl(0, "DiffChange", { fg = "#dfdfdf", bg = "#262626", reverse = true })
+  -- vim.api.nvim_set_hl(0, "DiffDelete", { fg = "#ffdf87", bg = "#262626", reverse = true })
+  -- vim.api.nvim_set_hl(0, "DiffText", { fg = "#afafaf", bg = "#262626", reverse = true })
+  -- WARN: these only work on neovim head
+  vim.opt.mousescroll = { "ver:1", "hor:6" }
+  vim.o.mousefocus = true
+  vim.o.mousemoveevent = true
+  vim.o.splitkeep = "screen"
+  ---
+
+  lvim.builtin.trouble = { active = false } -- enable/disable trouble for diagnostics
+  lvim.builtin.persistence = { active = true } -- change to false if you don't want persistence
+  lvim.builtin.dap.active = true -- change this to enable/disable debugging
+  lvim.builtin.fancy_wild_menu = { active = true } -- enable/disable cmp-cmdline
+  lvim.builtin.fancy_diff = { active = true } -- enable/disable fancier git diff
+  lvim.builtin.refactoring.active = true
+  lvim.builtin.lua_dev = { active = true } -- change this to enable/disable folke/lua_dev
+  lvim.builtin.test_runner = { active = true, runner = "neotest" } -- change this to enable/disable ultest or neotest
+  lvim.builtin.cheat = { active = false } -- enable/disable cheat.sh integration
+  lvim.builtin.sql_integration = { active = true } -- use sql integration
+  lvim.builtin.smooth_scroll = "" -- for smoth scrolling, can be "cinnamon", "neoscroll" or ""
+  lvim.builtin.custom_web_devicons = true -- install https://github.com/Nguyen-Hoang-Nam/mini-file-icons
+  lvim.builtin.harpoon = { active = false } -- use the harpoon plugin
+
+  lvim.builtin.tag_provider = nil -- change this to use different tag providers ( symbols-outline or vista )
+  lvim.builtin.global_statusline = true -- set true to use global statusline
+  lvim.builtin.dressing = { active = true } -- enable to override vim.ui.input and vim.ui.select with telescope
+  lvim.builtin.indentlines.active = false
+
+  lvim.builtin.tmux_lualine = false -- WARN: doesn't work with neovim nightly
+  if lvim.builtin.tmux_lualine then
+    vim.opt.cmdheight = 0
+    vim.opt.laststatus = 0
+    vim.g.tpipeline_cursormoved = 1
+    -- TODO: removed ?
+    -- vim.g.tpipeline_clearstl = 1
+  end
+
+  lvim.builtin.lsp_lines = true -- enable/disable lsp_lines to display lsp virtual text below instead of behind
+  lvim.lsp.diagnostics.virtual_text = true --remove this line if you want to see inline errors
+  if lvim.builtin.lsp_lines then
+    lvim.lsp.diagnostics.virtual_text = false
+    vim.diagnostic.config { virtual_lines = false } -- i only want to use it explicitly ( by calling the toggle function)
+  end
+
+  lvim.builtin.tree_provider = "neo-tree" -- can be "neo-tree" or "nvimtree" or ""
+
+  lvim.builtin.treesitter.rainbow.enable = true
+  -- lvim.builtin.notify.opts.level = "WARN" -- hover with multiple lsp servers produces info
+  -- lvim.builtin.noice.active = true # WARN: https://github.com/folke/noice.nvim/issues/298
+
+  lvim.format_on_save = {
+    pattern = "*.rs",
+    timeout = 2000,
+    filter = require("lvim.lsp.utils").format_filter,
+  }
+
+  lvim.builtin.borderless_cmp = true
+  lvim.builtin.colored_args = true
+end
+
 if lvim.builtin.winbar_provider == "navic" then
   vim.opt.showtabline = 1
   lvim.keys.normal_mode["<tab>"] =
@@ -102,11 +177,21 @@ lvim.builtin.latex = {
   rtl_support = true, -- if you want to use xelatex, it's a bit slower but works very well for RTL langs
   active = false, -- set to true to enable
 }
+
+-- TODO: verify cause deleted
+-- lvim.builtin.notify.active = true
+-- lvim.lsp.automatic_servers_installation = false
+
 if lvim.builtin.cursorline.active then
   lvim.lsp.document_highlight = false
 end
 
 -- Override Lunarvim defaults
+-- =========================================
+-- TODO: verify cause deleted
+-- lvim.lsp.code_lens_refresh = true
+
+-- LunarVim builtin config
 -- =========================================
 require("user.builtin").config()
 
@@ -125,6 +210,7 @@ end
 -- Language Specific
 -- =========================================
 vim.list_extend(lvim.lsp.automatic_configuration.skipped_servers, {
+  "angularls",
   "clangd",
   "dockerls",
   "gopls",
@@ -136,12 +222,18 @@ vim.list_extend(lvim.lsp.automatic_configuration.skipped_servers, {
   "texlab",
   "tsserver",
   "yamlls",
+  "jsonls",
+  "tailwindcss",
+  "spectral",
 })
 require("user.null_ls").config()
 
 -- Additional Plugins
 -- =========================================
 require("user.plugins").config()
+
+-- FIXME Bug with multiple lsp and hover
+-- require("notify").setup { level = "WARN" }
 
 -- Autocommands
 -- =========================================
