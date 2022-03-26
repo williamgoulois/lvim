@@ -19,35 +19,24 @@ lvim.line_wrap_cursor_movement = false
 vim.opt.wrap = true
 
 -- After changing plugin config exit and reopen LunarVim, Run :PackerInstall :PackerCompile
-lvim.builtin.dashboard.active = true
 lvim.builtin.terminal.active = true
 lvim.builtin.nvimtree.side = "left"
 lvim.builtin.nvimtree.show_icons.git = 0
+lvim.builtin.nvimtree.setup.filters.dotfiles = false
+lvim.builtin.nvimtree.setup.git.ignore= true
 lvim.builtin.telescope.defaults.layout_config.prompt_position = "top"
 lvim.builtin.telescope.defaults.sorting_strategy = "ascending"
-
 local actions = require("telescope.actions")
-lvim.builtin.telescope.defaults.mappings.i["<ESC>"] = actions.close
+lvim.builtin.telescope.defaults.mappings = {
+	i = {
+		["<ESC>"] = actions.close,
+	},
+}
 
 -- dashboard
-lvim.builtin.dashboard.custom_header = {
-	"            ██                                                                                           ",
-	"           ███                                                                                           ",
-	"          ▓███                                                                                           ",
-	"▓████████▌                                                                                               ",
-	"█████████                                                                                                ",
-	"████████                                                                                                 ",
-	"╙╙╙╙╙╙╙█▓▓b         @▓▓▓▓    ▄▓µ     ▓▓▓▓▌    ▓▓▓▓▌   ▓▓▓▓▄   ▐▓µ  ▓⌐   ,▄▓▓▓▄   %▓   ▄▓   @▓▓▓▓   ▓▌    ",
-	"      ▐███▌         ██▄▄    ▐█╙█     ██▄▄█▀   █▌▄▄   j█▄ ▄█⌐  ╫██▌ █µ  ▐█╨   ██   ██ ▐█─   ╫█▄▄    ██    ",
-	"     .████▌         ██└└   ╓██▓██    █▌ └██   █▌└└   j█▀▀█▄   ╫█ ▀██µ  ╙█▄  ,██    ███▀    ╫█└└    ██    ",
-	"▄▄▄▄▄╙▀▀▀▀¬         ╙▀     ▀╙   ▀▀   ▀▀▀▀▀    ▀▀▀▀▀   ▀  ╙▀   ╙▀  ╙▀     ▀▀▀▀└      ▀▀     ╙▀▀▀▀   ▀▀▀▀▀ ",
-	"████▀                                                                                                    ",
-	"███▌                                                                                                     ",
-	"███                                                                                                      ",
-	"██                                                                                                       ",
-	"█╜                                                                                                       ",
-}
-lvim.builtin.dashboard.footer = { "Welcome to LunarVim" }
+lvim.builtin.alpha.mode = "custom"
+	local alpha_opts = require("user.dashboard").config()
+	lvim.builtin.alpha["custom"] = {config = alpha_opts}
 
 -- if you don't want all the parsers change this to a table of the ones you want
 lvim.builtin.treesitter.ensure_installed = "maintained"
@@ -56,19 +45,13 @@ lvim.builtin.treesitter.highlight.enabled = false
 
 -- LSP
 lvim.lsp.diagnostics.virtual_text = false
-lvim.lang.tailwindcss.lsp.active = true
--- schemas
-require("user.json_schemas").setup()
-require("user.yaml_schemas").setup()
-require("user.js_schemas").setup()
+lvim.lsp.automatic_servers_installation = true
 
 -- Keybindings
 vim.api.nvim_set_keymap("n", "<Left>", "<C-w>h", { noremap = true, silent = true })
 vim.api.nvim_set_keymap("n", "<Down>", "<C-w>j", { noremap = true, silent = true })
 vim.api.nvim_set_keymap("n", "<Up>", "<C-w>k", { noremap = true, silent = true })
 vim.api.nvim_set_keymap("n", "<Right>", "<C-w>l", { noremap = true, silent = true })
-
-vim.api.nvim_set_keymap("i", "<right>", "compe#confirm('<CR>')", { silent = true, expr = true })
 
 -- Whichkey custom keymaps
 lvim.builtin.which_key.mappings["ss"] = {
@@ -84,24 +67,78 @@ lvim.builtin.which_key.vmappings["s"] = {
 	"Spectre selected word",
 }
 
+-- Prettier configuration
+local formatters = require("lvim.lsp.null-ls.formatters")
+formatters.setup({
+	{
+		exe = "prettier",
+		filetypes = {
+			"javascriptreact",
+			"javascript",
+			"typescriptreact",
+			"typescript",
+			"json",
+			"markdown",
+      "yaml",
+      "css",
+      "less"
+		},
+	},
+})
+
+-- ESLint
+local linters = require("lvim.lsp.null-ls.linters")
+linters.setup({
+	{
+		exe = "eslint_d",
+		filetypes = {
+			"javascriptreact",
+			"javascript",
+			"typescriptreact",
+			"typescript",
+			"vue",
+		},
+	},
+})
+
 -- Additional Plugins
 lvim.plugins = {
 	{ "lunarvim/colorschemes" },
+
+	{
+		"sindrets/diffview.nvim",
+		event = "BufRead",
+		config = function()
+			require("user.diffview").config()
+		end,
+	},
+  -- {"lukas-reineke/indent-blankline.nvim",
+  --   config= function()
+  --     require("user.indent_blankline").config()
+  --   end},
+  {'ThePrimeagen/git-worktree.nvim',
+    config= function()
+			vim.cmd([[packadd telescope.nvim]])
+      require("user.git_worktree").config()
+    end},
 	{
 		"mg979/vim-visual-multi",
 		branch = "master",
 	},
-	{
-		"sindrets/diffview.nvim",
-		event = "BufRead",
-	},
-	{
-		"kevinhwang91/nvim-bqf",
-		event = "BufRead",
-	},
+{
+      "kevinhwang91/nvim-bqf",
+    ft='qf',
+      config = function()
+        require("user.bqf").config()
+      end,
+event= { "BufRead", "BufNew" },
+    },
 	{
 		"windwp/nvim-ts-autotag",
 		event = "InsertEnter",
+    config = function()
+      require("nvim-ts-autotag").setup()
+    end,
 	},
 	{
 		"simrat39/symbols-outline.nvim",
@@ -177,6 +214,26 @@ lvim.plugins = {
 	{
 		"editorconfig/editorconfig-vim",
 	},
+	{
+		"tzachar/cmp-tabnine",
+		run = "./install.sh",
+		requires = "hrsh7th/nvim-cmp",
+		event = "InsertEnter",
+		config = function()
+			local tabnine = require("cmp_tabnine.config")
+			tabnine:setup({
+				max_lines = 1000,
+				max_num_results = 10,
+				sort = true,
+			})
+		end,
+},
+	    {
+      "nathom/filetype.nvim",
+      config = function()
+        require("user.filetype").config()
+      end,
+    },
 }
 
 -- Autocommands (https://neovim.io/doc/user/autocmd.html)
