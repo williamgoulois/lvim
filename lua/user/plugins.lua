@@ -1,6 +1,9 @@
 local M = {}
 
 M.config = function()
+  -- bug with plenary
+  vim.fn.setenv("MACOSX_DEPLOYMENT_TARGET", "10.15")
+
   local neoclip_req = { "kkharji/sqlite.lua", module = "sqlite" }
   if lvim.builtin.neoclip.enable_persistent_history == false then
     neoclip_req = {}
@@ -17,6 +20,31 @@ M.config = function()
     --     return (_time.hour >= 9 and _time.hour < 17) and lvim.builtin.time_based_themes
     --   end,
     -- },
+    {
+      "Equilibris/nx.nvim",
+      requires = {
+        "nvim-telescope/telescope.nvim",
+      },
+      config = function()
+        require("nx").setup {
+          nx_cmd_root = "pnpm exec nx",
+        }
+      end,
+    },
+    { "christoomey/vim-tmux-navigator" },
+    {
+      "mg979/vim-visual-multi",
+      config = function()
+        require("user.visual_multi").config()
+      end,
+      branch = "master",
+    },
+    {
+      "p00f/nvim-ts-rainbow",
+      config = function()
+        require("user.ts_rainbow").config()
+      end,
+    },
     {
       "rose-pine/neovim",
       as = "rose-pine",
@@ -55,6 +83,13 @@ M.config = function()
       end,
     },
     {
+      "kylechui/nvim-surround",
+      config = function()
+        require("nvim-surround").setup {}
+      end,
+    },
+    { "lunarvim/darkplus.nvim" },
+    {
       "ray-x/lsp_signature.nvim",
       config = function()
         require("user/lsp_signature").config()
@@ -89,6 +124,7 @@ M.config = function()
         }
       end,
       cmd = "Trouble",
+      disable = not lvim.builtin.trouble.active,
     },
     {
       "ggandor/leap.nvim",
@@ -128,13 +164,6 @@ M.config = function()
       opt = true,
       event = "InsertEnter",
       disable = not lvim.builtin.tabnine.active,
-    },
-    {
-      "folke/twilight.nvim",
-      config = function()
-        require("user.twilight").config()
-      end,
-      event = "BufRead",
     },
     {
       "kevinhwang91/nvim-bqf",
@@ -415,6 +444,7 @@ M.config = function()
       config = function()
         require("user.diffview").config()
       end,
+      requires = "nvim-lua/plenary.nvim",
       disable = not lvim.builtin.fancy_diff.active,
     },
     {
@@ -628,7 +658,31 @@ M.config = function()
       "nvim-neo-tree/neo-tree.nvim",
       branch = "v2.x",
       requires = {
+        "nvim-lua/plenary.nvim",
+        "kyazdani42/nvim-web-devicons", -- not strictly required, but recommended
         "MunifTanjim/nui.nvim",
+        {
+          -- only needed if you want to use the commands with "_with_window_picker" suffix
+          "s1n7ax/nvim-window-picker",
+          tag = "v1.*",
+          config = function()
+            require("window-picker").setup {
+              autoselect_one = true,
+              include_current = false,
+              filter_rules = {
+                -- filter using buffer options
+                bo = {
+                  -- if the file type is one of following, the window will be ignored
+                  filetype = { "neo-tree", "neo-tree-popup", "notify" },
+
+                  -- if the buffer type is one of following, the window will be ignored
+                  buftype = { "terminal", "quickfix" },
+                },
+              },
+              other_win_hl_color = "#e35e4f",
+            }
+          end,
+        },
       },
       config = function()
         require("user.neotree").config()

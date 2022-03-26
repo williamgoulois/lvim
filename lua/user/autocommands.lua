@@ -4,7 +4,8 @@ local create_aucmd = vim.api.nvim_create_autocmd
 
 M.config = function()
   vim.api.nvim_clear_autocmds { pattern = "lir", group = "_filetype_settings" }
-  vim.api.nvim_clear_autocmds { pattern = "*", group = "_lvim_colorscheme" }
+  -- TODO: Breaking ?
+  -- vim.api.nvim_clear_autocmds { pattern = "*", group = "_lvim_colorscheme" }
   vim.api.nvim_create_augroup("_lvim_user", {})
   -- Autocommands
   if lvim.builtin.nonumber_unfocus then
@@ -86,6 +87,18 @@ M.config = function()
       vim.opt_local.undofile = false
     end,
   })
+
+  -- uncomment the following if you want to show diagnostics on hover
+
+  -- create_aucmd("CursorHold", { group = "_lvim_user", pattern = "*", command = "lua vim.diagnostic.open_float(0,{scope='line'})" })
+  -- { "CursorHold", "*", "lua vim.diagnostic.open_float(0,{scope='line'})" },
+
+  -- uncomment the following if you want to show diagnostics in command
+  -- event is not really CursorMoved but rather on line change
+  -- create_aucmd(
+  --   "CursorMoved",
+  --   { group = "_lvim_user", pattern = "*", command = "lua require('user.lsp').echo_first_diagnostic()" }
+  -- )
 
   create_aucmd("TermOpen", {
     group = "_lvim_user",

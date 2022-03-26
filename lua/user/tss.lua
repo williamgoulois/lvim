@@ -136,6 +136,7 @@ end
 _G.css_to_js = css_to_js
 
 local function on_attach(client, bufnr)
+  -- we need to disable formatting as we use prettierd
   client.server_capabilities.documentFormattingProvider = false
   client.server_capabilities.documentRangeFormattingProvider = false
   require("lvim.lsp").common_on_attach(client, bufnr)
@@ -157,10 +158,21 @@ M.config = function()
     return
   end
 
+  --TODO: try to add this plugin
+
+  -- local plugins = {
+  --   {
+  --     name = "@monodon/typescript-nx-imports-plugin",
+  --     location = "/Users/williamgoulois/dev/monodon/packages/typescript-nx-imports-plugin",
+  --   },
+  -- }
+
   ts.setup {
     disable_commands = false, -- prevent the plugin from creating Vim commands
-    disable_formatting = false, -- disable tsserver's formatting capabilities
-    debug = false, -- enable debug logging for commands
+    debug = true, -- enable debug logging for commands
+    go_to_source_definition = {
+      fallback = true, -- fall back to standard LSP definition on failure
+    },
     server = { -- pass options to lspconfig's setup method
       settings = {
         typescript = {
@@ -188,6 +200,11 @@ M.config = function()
       },
       on_attach = on_attach,
       capabilities = lvim_lsp.common_capabilities(),
+      -- plugins = plugins,
+      tsserver = {
+        logVerbosity = 'verbose',
+        trace = 'verbose'
+      }
     },
   }
 end

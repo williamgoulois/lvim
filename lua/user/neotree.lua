@@ -51,7 +51,7 @@ M.config = function()
       },
       window = {
         mappings = {
-          ["h"] = "navigate_up",
+          ["h"] = "close_node",
           ["l"] = "open",
         },
       },
