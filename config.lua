@@ -228,12 +228,13 @@ event= { "BufRead", "BufNew" },
 			})
 		end,
 },
-	    {
-      "nathom/filetype.nvim",
-      config = function()
-        require("user.filetype").config()
-      end,
-    },
+  -- interferes with nvim-bqf
+	   --  {
+    --   "nathom/filetype.nvim",
+    --   config = function()
+    --     require("user.filetype").config()
+    --   end,
+    -- },
 }
 
 -- Autocommands (https://neovim.io/doc/user/autocmd.html)
