@@ -53,8 +53,8 @@ M.config = function()
   vim.wo.foldlevel = 4
   vim.wo.foldnestmax = 3
   vim.wo.foldminlines = 1
-  vim.opt.guifont = "FiraCode Nerd Font:h13"
   vim.opt.cmdheight = 1
+  vim.opt.guifont = "Hack Nerd Font:h13"
   vim.g.dashboard_enable_session = 0
   vim.g.dashboard_disable_statusline = 1
   vim.opt.pumblend = 10
@@ -177,14 +177,14 @@ M.config = function()
     vim.g.neovide_cursor_trail_length = 0.05
     vim.g.neovide_cursor_antialiasing = true
     vim.g.neovide_remember_window_size = true
-    vim.cmd [[set guifont=FiraCode\ Nerd\ Font,mini-file-icons]]
+    vim.cmd [[set guifont=Hack\ Nerd\ Font,mini-file-icons]]
   end
 
   if vim.g.nvui then
     -- Configure nvui here
-    vim.cmd [[NvuiCmdFontFamily FiraCode Nerd Font]]
+    vim.cmd [[NvuiCmdFontFamily Hack Nerd Font]]
     vim.cmd [[set linespace=1]]
-    vim.cmd [[set guifont=FiraCode\ Nerd\ Font:h14]]
+    vim.cmd [[set guifont=Hack\ Nerd\ Font:h14]]
     vim.cmd [[NvuiPopupMenuDefaultIconFg white]]
     vim.cmd [[NvuiCmdBg #1e2125]]
     vim.cmd [[NvuiCmdFg #abb2bf]]

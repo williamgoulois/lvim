@@ -51,7 +51,7 @@ function M.layout_config()
     width = 0.90,
     height = 0.85,
     preview_cutoff = 120,
-    prompt_position = "bottom",
+    prompt_position = "top",
     horizontal = {
       preview_width = function(_, cols, _)
         return math.floor(cols * 0.6)
@@ -74,17 +74,18 @@ end
 -- another file string search
 function M.find_string()
   local opts = {
-    border = true,
-    previewer = false,
-    shorten_path = false,
-    layout_strategy = "flex",
-    layout_config = {
-      width = 0.9,
-      height = 0.8,
-      horizontal = { width = { padding = 0.15 } },
-      vertical = { preview_height = 0.75 },
-    },
+    -- border = true,
+    -- previewer = false,
+    -- shorten_path = false,
+    -- layout_strategy = "flex",
+    -- layout_config = {
+    --   width = 0.9,
+    --   height = 0.8,
+    --   horizontal = { width = { padding = 0.15 } },
+    --   vertical = { preview_height = 0.75 },
+    -- },
     file_ignore_patterns = {
+      "patches/*",
       "vendor/*",
       "node_modules",
       "%.jpg",

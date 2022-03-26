@@ -41,7 +41,7 @@ end
 
 M.set_terminal_keymaps = function()
   local opts = { noremap = true }
-  vim.api.nvim_buf_set_keymap(0, "t", "<esc>", [[<C-\><C-n>]], opts)
+  -- vim.api.nvim_buf_set_keymap(0, "t", "<esc>", [[<C-\><C-n>]], opts)
   vim.api.nvim_buf_set_keymap(0, "t", "<C-h>", [[<C-\><C-n><C-W>h]], opts)
   vim.api.nvim_buf_set_keymap(0, "t", "<C-j>", [[<C-\><C-n><C-W>j]], opts)
   vim.api.nvim_buf_set_keymap(0, "t", "<C-k>", [[<C-\><C-n><C-W>k]], opts)
@@ -116,7 +116,6 @@ local function set_bufferline_keymaps()
   lvim.keys.normal_mode["<S-h>"] = "<Cmd>BufferLineCyclePrev<CR>"
   lvim.keys.normal_mode["[b"] = "<Cmd>BufferLineMoveNext<CR>"
   lvim.keys.normal_mode["]b"] = "<Cmd>BufferLineMovePrev<CR>"
-  lvim.builtin.which_key.mappings["c"] = {}
   lvim.builtin.which_key.mappings.b = {
     name = " Buffer",
     ["1"] = { "<Cmd>BufferLineGoToBuffer 1<CR>", "goto 1" },
@@ -172,6 +171,17 @@ local function set_harpoon_keymaps()
     ["<leader>3"] = { "<CMD>lua require('harpoon.ui').nav_file(3)<CR>", "󰎪 goto3" },
     ["<leader>4"] = { "<CMD>lua require('harpoon.ui').nav_file(4)<CR>", "󰎭 goto4" },
   }
+end
+
+local function set_custom_navigation()
+  -- vim.api.nvim_set_keymap("n", "<Left>", "<C-w>h", { noremap = true, silent = true })
+  -- vim.api.nvim_set_keymap("n", "<Down>", "<C-w>j", { noremap = true, silent = true })
+  -- vim.api.nvim_set_keymap("n", "<Up>", "<C-w>k", { noremap = true, silent = true })
+  -- vim.api.nvim_set_keymap("n", "<Right>", "<C-w>l", { noremap = true, silent = true })
+  vim.api.nvim_set_keymap("n", "C-h", "<C-w>h", { noremap = true, silent = true })
+  vim.api.nvim_set_keymap("n", "C-j", "<C-w>j", { noremap = true, silent = true })
+  vim.api.nvim_set_keymap("n", "C-k", "<C-w>k", { noremap = true, silent = true })
+  vim.api.nvim_set_keymap("n", "C-l", "<C-w>l", { noremap = true, silent = true })
 end
 
 M.set_task_runner_keymaps = function()
@@ -273,6 +283,7 @@ M.config = function()
   lvim.keys.visual_mode["p"] = [["_dP]]
   lvim.keys.visual_mode["ga"] = "<esc><Cmd>lua vim.lsp.buf.range_code_action()<CR>"
   lvim.keys.visual_mode["<leader>st"] = "<Cmd>lua require('user.telescope').grep_string_visual()<CR>"
+  set_custom_navigation()
 
   -- WhichKey keybindings
   -- =========================================
@@ -329,6 +340,7 @@ M.config = function()
   if lvim.builtin.file_browser.active then
     lvim.builtin.which_key.mappings["se"] = { "<cmd>Telescope file_browser<cr>", "File Browser" }
   end
+  lvim.builtin.which_key.mappings["st"] = { "<cmd>lua require('user.telescope').find_string()<cr>", "Text" }
   lvim.builtin.which_key.mappings["H"] = "󰞋 Help"
   lvim.builtin.which_key.mappings["h"] = { "<cmd>nohlsearch<CR>", "󰸱 No Highlight" }
   lvim.builtin.which_key.mappings.g.name = " Git"
@@ -337,6 +349,12 @@ M.config = function()
     lvim.builtin.which_key.mappings["I"] = { "<cmd>lua require('user.neovim').inlay_hints()<cr>", " Toggle Inlay" }
   end
   lvim.builtin.which_key.mappings.l.name = " LSP"
+  lvim.builtin.which_key.mappings["l"]["f"] = {
+    function()
+      require("lvim.lsp.utils").format { timeout_ms = 3000 }
+    end,
+    "Format",
+  }
   lvim.builtin.which_key.mappings["f"] = {
     require("user.telescope").find_project_files,
     " Find File",
@@ -470,8 +488,8 @@ M.config = function()
   lvim.builtin.which_key.mappings["z"] = { "<cmd>ZenMode<cr>", " Zen" }
   lvim.builtin.which_key.mappings["w"] = { "<cmd>w!<CR>", " Save" }
   lvim.builtin.which_key.vmappings["g"] = {
-    name = " Git",
     s = { "<cmd>lua require 'gitsigns'.stage_hunk()<cr>", "Stage Hunk" },
+    f = { "<cmd>DiffviewFileHistory %<cr>", "See file history" },
   }
   lvim.builtin.which_key.vmappings["r"] = {
     function()
@@ -479,13 +497,6 @@ M.config = function()
     end,
     "Structural replace",
   }
-
-  -- My wezterm is weird
-  -- =========================================
-  local user = vim.env.USER
-  if user and user == "abz" then
-    M.set_wezterm_keybindings()
-  end
 
   -- Navigate merge conflict markers
   local whk_status, whk = pcall(require, "which-key")

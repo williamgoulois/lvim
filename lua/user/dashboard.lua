@@ -8,7 +8,7 @@ M.config = function()
     val = require("user.banners").dashboard(),
     opts = {
       position = "center",
-      hl = "Comment",
+      hl = "Directory",
     },
   }
 
@@ -105,7 +105,7 @@ M.config = function()
         " " .. kind.cmp_kind.Folder .. " Explore",
         "<cmd>lua require('user.telescope').find_project_files()<CR>"
       ),
-      button("e", " " .. kind.cmp_kind.File .. " New file", ":ene <BAR> startinsert <CR>"),
+      button("e", " " .. kind.cmp_kind.File .. "  New file", ":ene <BAR> startinsert <CR>"),
       button("s", " " .. kind.icons.magic .. " Restore", ":lua require('persisted').load()<cr>"),
       button("g", " " .. kind.icons.git .. " Git Status", ":lua require 'lvim.core.terminal'.lazygit_toggle()<CR>"),
       button("r", " " .. kind.icons.clock .. " Recents", ":Telescope oldfiles only_cwd=true<CR>"),

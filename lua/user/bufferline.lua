@@ -65,7 +65,7 @@ M.config = function()
           icon = kind.icons.test,
           matcher = function(buf)
             local name = vim.api.nvim_buf_get_name(buf.id)
-            return name:match "_spec" or name:match "_test" or name:match "test_"
+            return name:match "_spec" or name:match "_test" or name:match "test_" or name:match "spec.ts"
           end,
         },
         {

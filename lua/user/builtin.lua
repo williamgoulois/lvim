@@ -49,16 +49,16 @@ M.default_diagnostic_config = {
       { " ", "FloatBorder" },
       { " ", "FloatBorder" },
     },
-    format = function(d)
-      local t = vim.deepcopy(d)
-      local code = d.code or (d.user_data and d.user_data.lsp.code)
-      for _, table in pairs(M.codes) do
-        if vim.tbl_contains(table, code) then
-          return table.message
-        end
-      end
-      return t.message
-    end,
+    -- format = function(d)
+    --   local t = vim.deepcopy(d)
+    --   local code = d.code or (d.user_data and d.user_data.lsp.code)
+    --   for _, table in pairs(M.codes) do
+    --     if vim.tbl_contains(table, code) then
+    --       return table.message
+    --     end
+    --   end
+    --   return t.message
+    -- end,
   },
 }
 
@@ -223,6 +223,10 @@ M.config = function()
     lvim.keys.insert_mode["<M-\\>"] = { "<Cmd>vertical Copilot panel<CR>", { silent = true } }
     lvim.builtin.cmp.mapping["<Tab>"] = cmp.mapping(M.tab, { "i", "c" })
     lvim.builtin.cmp.mapping["<S-Tab>"] = cmp.mapping(M.shift_tab, { "i", "c" })
+  else
+    lvim.builtin.cmp.mapping["<Tab>"] = cmp.mapping(M.tab, { "i", "s", "c" })
+    lvim.builtin.cmp.mapping["<S-Tab>"] = cmp.mapping(M.shift_tab, { "i", "s", "c" })
+    lvim.builtin.cmp.mapping["<Right>"] = cmp.mapping(M.enter, { "i", "s", "c" })
   end
 
   -- Comment
@@ -341,6 +345,7 @@ M.config = function()
       error = kind.icons.error,
     },
   }
+  lvim.builtin.nvimtree.setup.view.adaptive_size = true
   if lvim.builtin.tree_provider == "nvimtree" then
     lvim.builtin.nvimtree.on_config_done = function(_)
       lvim.builtin.which_key.mappings["e"] = { "<cmd>NvimTreeToggle<CR>", "󰀶 Explorer" }
@@ -351,7 +356,8 @@ M.config = function()
   -- Project
   -- =========================================
   lvim.builtin.project.active = true
-  lvim.builtin.project.detection_methods = { "lsp", "pattern" }
+  lvim.builtin.project.detection_methods = { "pattern" }
+  lvim.builtin.project.patterns = { ".git", "_darcs", ".hg", ".bzr", ".svn", "Makefile" }
 
   -- Theme
   -- =========================================
@@ -394,7 +400,7 @@ M.config = function()
       node_decremental = "<C-r>",
     },
   }
-  lvim.builtin.treesitter.matchup.enable = true
+  lvim.builtin.treesitter.matchup.enable = false
   -- lvim.treesitter.textsubjects.enable = true
   -- lvim.treesitter.playground.enable = true
   lvim.builtin.treesitter.query_linter = {
@@ -484,8 +490,10 @@ M.config = function()
     preview = { " ", "│", " ", "▌", "▌", "╮", "╯", "▌" },
   }
   lvim.builtin.telescope.defaults.selection_caret = "  "
+  lvim.builtin.telescope.defaults.sorting_strategy = "ascending"
   lvim.builtin.telescope.defaults.cache_picker = { num_pickers = 3 }
   lvim.builtin.telescope.defaults.layout_strategy = "horizontal"
+  vim.tbl_extend("force", lvim.builtin.telescope.defaults, { preview = { timeout = 1000 } })
   lvim.builtin.telescope.defaults.file_ignore_patterns = {
     "vendor/*",
     "%.lock",
@@ -500,6 +508,8 @@ M.config = function()
     "%.otf",
     "%.ttf",
     ".git/",
+    ".yarn/",
+    "^%.next/",
     "%.webp",
     ".dart_tool/",
     ".github/",
@@ -537,14 +547,16 @@ M.config = function()
     "%.epub",
     "%.flac",
     "%.tar.gz",
+    "patches/*"
   }
   local user_telescope = require "user.telescope"
   lvim.builtin.telescope.defaults.layout_config = user_telescope.layout_config()
   local actions = require "telescope.actions"
   lvim.builtin.telescope.defaults.mappings = {
     i = {
-      ["<c-c>"] = require("telescope.actions").close,
-      ["<c-y>"] = require("telescope.actions").which_key,
+      ["<esc>"] = actions.close,
+      ["<c-c>"] = actions.close,
+      ["<c-y>"] = actions.which_key,
       ["<tab>"] = actions.toggle_selection + actions.move_selection_next,
       ["<s-tab>"] = actions.toggle_selection + actions.move_selection_previous,
       ["<cr>"] = user_telescope.multi_selection_open,
@@ -657,7 +669,7 @@ function M.tab(fallback)
   end
 end
 
-function M.shift_tab(fallback)
+function M.shift_tab_copilot(fallback)
   local methods = require("lvim.core.cmp").methods
   local luasnip = require "luasnip"
   if cmp.visible() then
@@ -868,7 +880,7 @@ M.lsp_on_attach_callback = function(client, _)
     end
   elseif client.name == "tsserver" then
     mappings["lA"] = { "<Cmd>TSLspImportAll<CR>", "Import All" }
-    mappings["lR"] = { "<Cmd>TSLspRenameFile<CR>", "Rename File" }
+    mappings["lR"] = { "<Cmd>LspRestart<CR>", "Restart server" }
     mappings["lO"] = { "<Cmd>TSLspOrganize<CR>", "Organize Imports" }
     mappings["li"] = { "<cmd>TypescriptAddMissingImports<Cr>", "AddMissingImports" }
     mappings["lo"] = { "<cmd>TypescriptOrganizeImports<cr>", "OrganizeImports" }
