@@ -1,21 +1,8 @@
 local M = {}
 
--- HACK: for some reason, the alt keybindings are not working in my wezterm
-M.set_wezterm_keybindings = function()
-  lvim.keys.insert_mode["å"] = lvim.keys.insert_mode["<A-a>"]
-  lvim.keys.insert_mode["ß"] = lvim.keys.insert_mode["<A-s>"]
-  lvim.keys.insert_mode["´"] = lvim.keys.insert_mode["<A-e>"]
-  lvim.keys.insert_mode["∆"] = lvim.keys.insert_mode["<A-j>"]
-  lvim.keys.insert_mode["˚"] = lvim.keys.insert_mode["<A-k>"]
-  lvim.keys.normal_mode["å"] = lvim.keys.normal_mode["<A-a>"]
-  lvim.keys.normal_mode["≈"] = lvim.keys.normal_mode["<A-x>"]
-  lvim.keys.visual_mode["å"] = lvim.keys.visual_mode["<A-a>"]
-  lvim.keys.visual_mode["≈"] = lvim.keys.visual_mode["<A-x>"]
-end
-
 M.set_terminal_keymaps = function()
   local opts = { noremap = true }
-  vim.api.nvim_buf_set_keymap(0, "t", "<esc>", [[<C-\><C-n>]], opts)
+  -- vim.api.nvim_buf_set_keymap(0, "t", "<esc>", [[<C-\><C-n>]], opts)
   vim.api.nvim_buf_set_keymap(0, "t", "<C-h>", [[<C-\><C-n><C-W>h]], opts)
   vim.api.nvim_buf_set_keymap(0, "t", "<C-j>", [[<C-\><C-n><C-W>j]], opts)
   vim.api.nvim_buf_set_keymap(0, "t", "<C-k>", [[<C-\><C-n><C-W>k]], opts)
@@ -29,37 +16,43 @@ M.set_hop_keymaps = function()
   vim.api.nvim_set_keymap(
     "n",
     "f",
-    "<cmd>lua require'hop'.hint_char1({ direction = require'hop.hint'.HintDirection.AFTER_CURSOR, current_line_only = true })<cr>",
+    "<cmd>lua require'hop'.hint_char1({ direction = require'hop.hint'.HintDirection.AFTER_CURSOR, current_line_only = true })<cr>"
+    ,
     {}
   )
   vim.api.nvim_set_keymap(
     "n",
     "F",
-    "<cmd>lua require'hop'.hint_char1({ direction = require'hop.hint'.HintDirection.BEFORE_CURSOR, current_line_only = true })<cr>",
+    "<cmd>lua require'hop'.hint_char1({ direction = require'hop.hint'.HintDirection.BEFORE_CURSOR, current_line_only = true })<cr>"
+    ,
     {}
   )
   vim.api.nvim_set_keymap(
     "o",
     "f",
-    "<cmd>lua require'hop'.hint_char1({ direction = require'hop.hint'.HintDirection.AFTER_CURSOR, current_line_only = true, inclusive_jump = true })<cr>",
+    "<cmd>lua require'hop'.hint_char1({ direction = require'hop.hint'.HintDirection.AFTER_CURSOR, current_line_only = true, inclusive_jump = true })<cr>"
+    ,
     {}
   )
   vim.api.nvim_set_keymap(
     "o",
     "F",
-    "<cmd>lua require'hop'.hint_char1({ direction = require'hop.hint'.HintDirection.BEFORE_CURSOR, current_line_only = true, inclusive_jump = true })<cr>",
+    "<cmd>lua require'hop'.hint_char1({ direction = require'hop.hint'.HintDirection.BEFORE_CURSOR, current_line_only = true, inclusive_jump = true })<cr>"
+    ,
     {}
   )
   vim.api.nvim_set_keymap(
     "",
     "t",
-    "<cmd>lua require'hop'.hint_char1({ direction = require'hop.hint'.HintDirection.AFTER_CURSOR, current_line_only = true, hint_offset = -1 })<cr>",
+    "<cmd>lua require'hop'.hint_char1({ direction = require'hop.hint'.HintDirection.AFTER_CURSOR, current_line_only = true, hint_offset = -1 })<cr>"
+    ,
     {}
   )
   vim.api.nvim_set_keymap(
     "",
     "T",
-    "<cmd>lua require'hop'.hint_char1({ direction = require'hop.hint'.HintDirection.BEFORE_CURSOR, current_line_only = true, hint_offset = -1 })<cr>",
+    "<cmd>lua require'hop'.hint_char1({ direction = require'hop.hint'.HintDirection.BEFORE_CURSOR, current_line_only = true, hint_offset = -1 })<cr>"
+    ,
     {}
   )
 end
@@ -90,7 +83,6 @@ local function set_bufferline_keymaps()
   lvim.keys.normal_mode["<S-h>"] = "<Cmd>BufferLineCyclePrev<CR>"
   lvim.keys.normal_mode["[b"] = "<Cmd>BufferLineMoveNext<CR>"
   lvim.keys.normal_mode["]b"] = "<Cmd>BufferLineMovePrev<CR>"
-  lvim.builtin.which_key.mappings["c"] = {}
   lvim.builtin.which_key.mappings.b = {
     name = "﩯Buffer",
     ["1"] = { "<Cmd>BufferLineGoToBuffer 1<CR>", "goto 1" },
@@ -146,6 +138,17 @@ local function set_harpoon_keymaps()
     ["<leader>3"] = { "<CMD>lua require('harpoon.ui').nav_file(3)<CR>", " goto3" },
     ["<leader>4"] = { "<CMD>lua require('harpoon.ui').nav_file(4)<CR>", " goto4" },
   }
+end
+
+local function set_custom_navigation()
+  -- vim.api.nvim_set_keymap("n", "<Left>", "<C-w>h", { noremap = true, silent = true })
+  -- vim.api.nvim_set_keymap("n", "<Down>", "<C-w>j", { noremap = true, silent = true })
+  -- vim.api.nvim_set_keymap("n", "<Up>", "<C-w>k", { noremap = true, silent = true })
+  -- vim.api.nvim_set_keymap("n", "<Right>", "<C-w>l", { noremap = true, silent = true })
+  vim.api.nvim_set_keymap("n", "C-h", "<C-w>h", { noremap = true, silent = true })
+  vim.api.nvim_set_keymap("n", "C-j", "<C-w>j", { noremap = true, silent = true })
+  vim.api.nvim_set_keymap("n", "C-k", "<C-w>k", { noremap = true, silent = true })
+  vim.api.nvim_set_keymap("n", "C-l", "<C-w>l", { noremap = true, silent = true })
 end
 
 M.set_task_runner_keymaps = function()
@@ -212,7 +215,7 @@ M.config = function()
     end
   end
   lvim.keys.insert_mode["<A-s>"] =
-    "<cmd>lua require('telescope').extensions.luasnip.luasnip(require('telescope.themes').get_cursor({}))<CR>"
+  "<cmd>lua require('telescope').extensions.luasnip.luasnip(require('telescope.themes').get_cursor({}))<CR>"
   lvim.keys.command_mode["w!!"] = "execute 'silent! write !sudo tee % >/dev/null' <bar> edit!"
   lvim.keys.normal_mode["]d"] = "<cmd>lua vim.diagnostic.goto_next()<cr>"
   lvim.keys.normal_mode["[d"] = "<cmd>lua vim.diagnostic.goto_prev()<cr>"
@@ -222,10 +225,10 @@ M.config = function()
   lvim.keys.normal_mode["<C-n>i"] = { "<C-i>", { noremap = true } }
   if vim.fn.has "mac" == 1 then
     lvim.keys.normal_mode["gx"] =
-      [[<cmd>lua os.execute("open " .. vim.fn.shellescape(vim.fn.expand "<cWORD>")); vim.cmd "redraw!"<cr>]]
+    [[<cmd>lua os.execute("open " .. vim.fn.shellescape(vim.fn.expand "<cWORD>")); vim.cmd "redraw!"<cr>]]
   elseif vim.fn.has "linux" then
     lvim.keys.normal_mode["gx"] =
-      [[<cmd>lua os.execute("xdg-open " .. vim.fn.shellescape(vim.fn.expand "<cWORD>")); vim.cmd "redraw!"<cr>]]
+    [[<cmd>lua os.execute("xdg-open " .. vim.fn.shellescape(vim.fn.expand "<cWORD>")); vim.cmd "redraw!"<cr>]]
   end
   if lvim.builtin.bufferline.active then
     set_bufferline_keymaps()
@@ -236,7 +239,7 @@ M.config = function()
   lvim.keys.normal_mode["<esc><esc>"] = "<cmd>nohlsearch<cr>"
   lvim.keys.normal_mode["Y"] = "y$"
   lvim.keys.normal_mode["gv"] =
-    "<cmd>vsplit | lua vim.lsp.buf.definition({on_list = function(items) vim.fn.setqflist({}, 'r', items) vim.cmd('cfirst') end})<cr>"
+  "<cmd>vsplit | lua vim.lsp.buf.definition({on_list = function(items) vim.fn.setqflist({}, 'r', items) vim.cmd('cfirst') end})<cr>"
   if lvim.builtin.harpoon.active then
     set_harpoon_keymaps()
   end
@@ -245,6 +248,7 @@ M.config = function()
   lvim.keys.visual_mode["p"] = [["_dP]]
   lvim.keys.visual_mode["ga"] = "<esc><Cmd>lua vim.lsp.buf.range_code_action()<CR>"
   lvim.keys.visual_mode["<leader>st"] = "<Cmd>lua require('user.telescope').grep_string_visual()<CR>"
+  set_custom_navigation()
 
   -- WhichKey keybindings
   -- =========================================
@@ -294,7 +298,7 @@ M.config = function()
   }
   if lvim.builtin.legendary.active then
     lvim.builtin.which_key.mappings["C"] =
-      { "<cmd>lua require('legendary').find('commands')<cr>", " Command Palette" }
+    { "<cmd>lua require('legendary').find('commands')<cr>", " Command Palette" }
     lvim.keys.normal_mode["<c-P>"] = "<cmd>lua require('legendary').find()<cr>"
   end
 
@@ -326,7 +330,7 @@ M.config = function()
 
   if status_ok_comment and cmt["toggle"] ~= nil then
     lvim.builtin.which_key.vmappings["/"] =
-      { "<ESC><CMD>lua require('Comment.api').toggle.linewise(vim.fn.visualmode())<CR>", "Comment" }
+    { "<ESC><CMD>lua require('Comment.api').toggle.linewise(vim.fn.visualmode())<CR>", "Comment" }
   end
 
   if lvim.builtin.noice.active then
@@ -438,8 +442,8 @@ M.config = function()
   lvim.builtin.which_key.mappings["z"] = { "<cmd>ZenMode<cr>", " Zen" }
   lvim.builtin.which_key.mappings["w"] = { "<cmd>w!<CR>", " Save" }
   lvim.builtin.which_key.vmappings["g"] = {
-    name = " Git",
     s = { "<cmd>lua require 'gitsigns'.stage_hunk()<cr>", "Stage Hunk" },
+    f = { "<cmd>DiffviewFileHistory %<cr>", "See file history" },
   }
   lvim.builtin.which_key.vmappings["r"] = {
     function()
@@ -447,13 +451,6 @@ M.config = function()
     end,
     "Structural replace",
   }
-
-  -- My wezterm is weird
-  -- =========================================
-  local user = vim.env.USER
-  if user and user == "abz" then
-    M.set_wezterm_keybindings()
-  end
 
   -- Navigate merge conflict markers
   local whk_status, whk = pcall(require, "which-key")
