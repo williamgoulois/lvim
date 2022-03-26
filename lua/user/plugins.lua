@@ -1,59 +1,35 @@
 local M = {}
 
 M.config = function()
+  -- bug with plenary
+  vim.fn.setenv("MACOSX_DEPLOYMENT_TARGET", "10.15")
+
   local neoclip_req = { "tami5/sqlite.lua", module = "sqlite" }
   if lvim.builtin.neoclip.enable_persistent_history == false then
     neoclip_req = {}
   end
   lvim.plugins = {
     {
-      "rose-pine/neovim",
-      as = "rose-pine",
+      "mg979/vim-visual-multi",
       config = function()
-        require("user.theme").rose_pine()
-        vim.cmd [[colorscheme rose-pine]]
+        require("user.visual_multi").config()
       end,
-      cond = function()
-        local _time = os.date "*t"
-        return (_time.hour >= 1 and _time.hour < 9) and lvim.builtin.time_based_themes
+      branch = "master",
+    },
+    {
+      "p00f/nvim-ts-rainbow",
+      config = function()
+        require("user.ts_rainbow").config()
       end,
     },
     {
-      "abzcoding/tokyonight.nvim",
-      branch = "feat/local",
-      config = function()
-        require("user.theme").tokyonight()
-        vim.cmd [[colorscheme tokyonight]]
-      end,
-      cond = function()
-        local _time = os.date "*t"
-        return (_time.hour >= 9 and _time.hour < 17) and lvim.builtin.time_based_themes
-      end,
+      "tpope/vim-surround",
+      keys = { "c", "d", "y" },
     },
     {
-      "catppuccin/nvim",
-      as = "catppuccin",
-      config = function()
-        require("user.theme").catppuccin()
-        vim.cmd [[colorscheme catppuccin]]
-      end,
-      cond = function()
-        local _time = os.date "*t"
-        return (_time.hour >= 17 and _time.hour < 21) and lvim.builtin.time_based_themes
-      end,
+      "tpope/vim-repeat",
     },
-    {
-      "rebelot/kanagawa.nvim",
-      config = function()
-        require("user.theme").kanagawa()
-        vim.cmd [[colorscheme kanagawa]]
-      end,
-      cond = function()
-        local _time = os.date "*t"
-        return ((_time.hour >= 21 and _time.hour < 24) or (_time.hour >= 0 and _time.hour < 1))
-          and lvim.builtin.time_based_themes
-      end,
-    },
+    { "lunarvim/colorschemes" },
     {
       "ray-x/lsp_signature.nvim",
       config = function()
@@ -89,6 +65,7 @@ M.config = function()
         }
       end,
       cmd = "Trouble",
+      disable = not lvim.builtin.trouble.active,
     },
     {
       "ggandor/lightspeed.nvim",
@@ -138,13 +115,6 @@ M.config = function()
       opt = true,
       event = "InsertEnter",
       disable = not lvim.builtin.tabnine.active,
-    },
-    {
-      "folke/twilight.nvim",
-      config = function()
-        require("user.twilight").config()
-      end,
-      event = "BufRead",
     },
     {
       "kevinhwang91/nvim-bqf",
@@ -393,9 +363,6 @@ M.config = function()
       cmd = { "DiffviewOpen", "DiffviewFileHistory" },
       module = "diffview",
       keys = "<leader>gd",
-      setup = function()
-        require("which-key").register { ["<leader>gd"] = "diffview: diff HEAD" }
-      end,
       config = function()
         require("diffview").setup {
           enhanced_diff_hl = true,
@@ -417,7 +384,7 @@ M.config = function()
           ["*"] = vim.tbl_extend(
             "force",
             require("distant.settings").chip_default(),
-            { mode = "ssh" } -- use SSH mode by default
+            { mode = "ssh" }-- use SSH mode by default
           ),
         }
       end,

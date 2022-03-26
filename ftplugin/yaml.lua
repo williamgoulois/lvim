@@ -1,4 +1,4 @@
-local opts = {
+local yamlls_opts = {
   settings = {
     yaml = {
       hover = true,
@@ -25,4 +25,19 @@ local opts = {
   },
 }
 
-require("lvim.lsp.manager").setup("yamlls", opts)
+-- local servers = require "nvim-lsp-installer.servers"
+
+-- local yamlls_available, yamlls = servers.get_server "yamlls"
+-- if yamlls_available then
+--   yamlls_opts.cmd_env = yamlls:get_default_options().cmd_env
+-- end
+
+-- local spectral_opts = {}
+
+-- local spectral_available, spectral = servers.get_server "spectral"
+-- if spectral_available then
+--   spectral_opts.cmd = spectral:get_default_options().cmd
+-- end
+-- require("lvim.lsp.manager").setup("spectral", {})
+
+require("lvim.lsp.manager").setup("yamlls", yamlls_opts)

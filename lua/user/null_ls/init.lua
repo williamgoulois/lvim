@@ -20,15 +20,6 @@ M.config = function()
       timeout = 10000,
     },
     nls.builtins.formatting.prettierd.with {
-      condition = function(utils)
-        return not utils.root_has_file { ".eslintrc", ".eslintrc.js" }
-      end,
-      prefer_local = "node_modules/.bin",
-    },
-    nls.builtins.formatting.eslint_d.with {
-      condition = function(utils)
-        return utils.root_has_file { ".eslintrc", ".eslintrc.js" }
-      end,
       prefer_local = "node_modules/.bin",
     },
     nls.builtins.formatting.stylua,
@@ -42,6 +33,7 @@ M.config = function()
     nls.builtins.formatting.shfmt.with { extra_args = { "-i", "2", "-ci" } },
     nls.builtins.formatting.black.with { extra_args = { "--fast" }, filetypes = { "python" } },
     nls.builtins.formatting.isort.with { extra_args = { "--profile", "black" }, filetypes = { "python" } },
+    nls.builtins.diagnostics.jsonlint,
     nls.builtins.diagnostics.ansiblelint.with {
       condition = function(utils)
         return utils.root_has_file "roles" and utils.root_has_file "inventories"
@@ -54,9 +46,10 @@ M.config = function()
     },
     nls.builtins.diagnostics.hadolint,
     nls.builtins.diagnostics.eslint_d.with {
-      condition = function(utils)
-        return utils.root_has_file { ".eslintrc", ".eslintrc.js" }
-      end,
+      -- add eslint even without config
+      -- condition = function(utils)
+      --   return utils.root_has_file { ".eslintrc", ".eslintrc.js" }
+      -- end,
       prefer_local = "node_modules/.bin",
     },
     nls.builtins.diagnostics.semgrep.with {
@@ -89,12 +82,13 @@ M.config = function()
       end,
     },
     nls.builtins.code_actions.shellcheck,
-    nls.builtins.code_actions.eslint_d.with {
-      condition = function(utils)
-        return utils.root_has_file { ".eslintrc", ".eslintrc.js" }
-      end,
-      prefer_local = "node_modules/.bin",
-    },
+    -- PERF: remove this for better perf
+    -- nls.builtins.code_actions.eslint_d.with {
+    --   condition = function(utils)
+    --     return utils.root_has_file { ".eslintrc", ".eslintrc.js" }
+    --   end,
+    --   prefer_local = "node_modules/.bin",
+    -- },
     -- TODO: try these later on
     -- nls.builtins.formatting.google_java_format,
     -- nls.builtins.code_actions.proselint,

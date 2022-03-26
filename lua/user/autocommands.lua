@@ -48,6 +48,18 @@ augroup END
     })
   end
 
+  -- uncomment the following if you want to show diagnostics on hover
+
+  -- create_aucmd("CursorHold", { group = "_lvim_user", pattern = "*", command = "lua vim.diagnostic.open_float(0,{scope='line'})" })
+  -- { "CursorHold", "*", "lua vim.diagnostic.open_float(0,{scope='line'})" },
+
+  -- uncomment the following if you want to show diagnostics in command
+  -- event is not really CursorMoved but rather on line change
+  -- create_aucmd(
+  --   "CursorMoved",
+  --   { group = "_lvim_user", pattern = "*", command = "lua require('user.lsp').echo_first_diagnostic()" }
+  -- )
+
   create_aucmd("TermOpen", {
     group = "_lvim_user",
     pattern = "term://*",
@@ -105,9 +117,9 @@ augroup END
     group = "_lvim_user",
     pattern = { "typescript", "typescriptreact" },
     callback = function()
-      vim.keymap.set("n", "<leader>lA", "<Cmd>TSLspImportAll<CR>")
-      vim.keymap.set("n", "<leader>lR", "<Cmd>TSLspRenameFile<CR>")
-      vim.keymap.set("n", "<leader>lO", "<Cmd>TSLspOrganize<CR>")
+      vim.keymap.set("n", "<leader>lA", "<Cmd>TypescriptAddMissingImports<CR>")
+      vim.keymap.set("n", "<leader>lR", "<Cmd>TypescriptRenameFile<CR>")
+      vim.keymap.set("n", "<leader>lO", "<Cmd>TypescriptOrganizeImports<CR>")
     end,
   })
   create_aucmd("FileType", {

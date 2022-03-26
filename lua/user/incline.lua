@@ -44,6 +44,9 @@ M.config = function()
         inactive = {
           Normal = "Directory",
         },
+        active = {
+          Normal = "Directory",
+        },
       },
       width = "fit",
       padding = { left = 2, right = 1 },
@@ -53,8 +56,8 @@ M.config = function()
       },
     },
     hide = {
-      cursorline = false,
-      focused_win = true,
+      cursorline = "focused_win",
+      focused_win = false,
       only_win = false,
     },
     render = render,

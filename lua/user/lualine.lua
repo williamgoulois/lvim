@@ -28,6 +28,7 @@ local function testing()
   end
   return nil
 end
+
 local function using_session()
   return (vim.g.using_persistence ~= nil)
 end
@@ -173,7 +174,9 @@ M.config = function()
     check_git_workspace = function()
       local filepath = vim.fn.expand "%:p:h"
       local gitdir = vim.fn.finddir(".git", filepath .. ";")
-      return gitdir and #gitdir > 0 and #gitdir < #filepath
+      -- Added to support git worktrees
+      local gitfile = vim.fn.findfile(".git", filepath .. ";")
+      return (gitdir and #gitdir > 0 and #gitdir < #filepath) or (gitfile and #gitfile > 0 and #gitfile < #filepath)
     end,
   }
 
@@ -228,11 +231,11 @@ M.config = function()
           end,
           padding = { left = 1, right = 0 },
         },
-        {
-          "filename",
-          cond = conditions.buffer_not_empty,
-          color = { fg = colors.blue, gui = "bold" },
-        },
+        -- {
+        --   "filename",
+        --   cond = conditions.buffer_not_empty,
+        --   color = { fg = colors.blue, gui = "bold" },
+        -- },
       },
       lualine_x = {},
     },
@@ -300,42 +303,41 @@ M.config = function()
     gui = "bold",
   }
 
-  ins_left {
-    function()
-      local fname = vim.fn.expand "%:p"
-      local ftype = vim.fn.expand "%:e"
-      local cwd = vim.api.nvim_call_function("getcwd", {})
-      if
-        string.find(fname, "term") ~= nil
-        and string.find(fname, "lazygit;#toggleterm") ~= nil
-        and (vim.fn.has "linux" == 1 or vim.fn.has "mac" == 1)
-      then
-        local git_repo_cmd = io.popen 'git remote get-url origin | tr -d "\n"'
-        local git_repo = git_repo_cmd:read "*a"
-        git_repo_cmd:close()
-        local git_branch_cmd = io.popen 'git branch --show-current | tr -d "\n"'
-        local git_branch = git_branch_cmd:read "*a"
-        git_branch_cmd:close()
-        return git_repo .. "~" .. git_branch
-      end
-      local show_name = vim.fn.expand "%:t"
-      if #cwd > 0 and #ftype > 0 then
-        show_name = fname:sub(#cwd + 2)
-      end
-      local readonly = ""
-      local modified = ""
-      if vim.bo.readonly then
-        readonly = "  "
-      end
-      if vim.bo.modified then
-        modified = "  "
-      end
-      return show_name .. readonly .. modified
-    end,
-    cond = conditions.buffer_not_empty,
-    padding = { left = 1, right = 1 },
-    color = { fg = colors.fg, gui = "bold" },
-  }
+  -- ins_left {
+  --   function()
+  --     local fname = vim.fn.expand "%:p"
+  --     local ftype = vim.fn.expand "%:e"
+  --     local cwd = vim.api.nvim_call_function("getcwd", {})
+  --     if string.find(fname, "term") ~= nil
+  --         and string.find(fname, "lazygit;#toggleterm") ~= nil
+  --         and (vim.fn.has "linux" == 1 or vim.fn.has "mac" == 1)
+  --     then
+  --       local git_repo_cmd = io.popen 'git remote get-url origin | tr -d "\n"'
+  --       local git_repo = git_repo_cmd:read "*a"
+  --       git_repo_cmd:close()
+  --       local git_branch_cmd = io.popen 'git branch --show-current | tr -d "\n"'
+  --       local git_branch = git_branch_cmd:read "*a"
+  --       git_branch_cmd:close()
+  --       return git_repo .. "~" .. git_branch
+  --     end
+  --     local show_name = vim.fn.expand "%:t"
+  --     if #cwd > 0 and #ftype > 0 then
+  --       show_name = fname:sub(#cwd + 2)
+  --     end
+  --     local readonly = ""
+  --     local modified = ""
+  --     if vim.bo.readonly then
+  --       readonly = "  "
+  --     end
+  --     if vim.bo.modified then
+  --       modified = "  "
+  --     end
+  --     return show_name .. readonly .. modified
+  --   end,
+  --   cond = conditions.buffer_not_empty,
+  --   padding = { left = 1, right = 1 },
+  --   color = { fg = colors.fg, gui = "bold" },
+  -- }
 
   ins_left {
     "diff",
@@ -517,6 +519,7 @@ M.config = function()
         end
         return string.format("%.1f%s", size, sufixes[i])
       end
+
       local file = vim.fn.expand "%:p"
       if string.len(file) == 0 then
         return ""

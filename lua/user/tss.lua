@@ -14,7 +14,7 @@ M.map = function(mode, target, source, opts)
   vim.keymap.set(mode, target, source, get_map_options(opts))
 end
 
-for _, mode in ipairs({ "n", "o", "i", "x", "t", "c" }) do
+for _, mode in ipairs { "n", "o", "i", "x", "t", "c" } do
   M[mode .. "map"] = function(...)
     M.map(mode, ...)
   end
@@ -78,7 +78,7 @@ local change_template_string_quotes = function()
 
   -- input and move cursor into pair
   M.input("${}", "n")
-  M.input("<Left>")
+  M.input "<Left>"
 end
 
 -- padding: 40px; ->
@@ -101,11 +101,11 @@ local css_to_js = function(opts)
       goto continue
     end
     -- ignore comments
-    if line:find("%/%*") then
+    if line:find "%/%*" then
       goto continue
     end
 
-    local indentation, name, val = line:match("(%s+)(.+):%s(.+)")
+    local indentation, name, val = line:match "(%s+)(.+):%s(.+)"
     -- skip non-matching lines
     if not (name and val) then
       goto continue
@@ -119,7 +119,7 @@ local css_to_js = function(opts)
     local parsed_val = val:gsub(";", "")
     -- keep numbers, wrap others in quotes
     parsed_val = tonumber(parsed_val) or string.format('"%s"', parsed_val)
-    local parsed_line = table.concat({ indentation, parsed_name, ": ", parsed_val, "," })
+    local parsed_line = table.concat { indentation, parsed_name, ": ", parsed_val, "," }
 
     did_convert = true
     local row = start_line + i
@@ -129,22 +129,23 @@ local css_to_js = function(opts)
   end
 
   if not did_convert then
-    M.warn("css-to-js: nothing to convert")
+    M.warn "css-to-js: nothing to convert"
   end
 end
 
 _G.css_to_js = css_to_js
 
 local function on_attach(client, bufnr)
+  -- we need to disable formatting as we use prettierd
   client.server_capabilities.documentFormattingProvider = false
   client.server_capabilities.documentRangeFormattingProvider = false
   require("lvim.lsp").common_on_attach(client, bufnr)
   api.nvim_buf_create_user_command(bufnr, "CssToJs", css_to_js, { range = true })
-  M.buf_map(bufnr, "n", "gs", ":TypescriptRemoveUnused<CR>")
-  M.buf_map(bufnr, "n", "gS", ":TypescriptOrganizeImports<CR>")
-  M.buf_map(bufnr, "n", "go", ":TypescriptAddMissingImports<CR>")
-  M.buf_map(bufnr, "n", "gA", ":TypescriptFixAll<CR>")
-  M.buf_map(bufnr, "n", "gI", ":TypescriptRenameFile<CR>")
+  -- M.buf_map(bufnr, "n", "gs", ":TypescriptRemoveUnused<CR>")
+  -- M.buf_map(bufnr, "n", "gS", ":TypescriptOrganizeImports<CR>")
+  -- M.buf_map(bufnr, "n", "go", ":TypescriptAddMissingImports<CR>")
+  -- M.buf_map(bufnr, "n", "gA", ":TypescriptFixAll<CR>")
+  -- M.buf_map(bufnr, "n", "gI", ":TypescriptRenameFile<CR>")
   M.buf_map(bufnr, "i", "${", change_template_string_quotes, { nowait = true })
   api.nvim_buf_create_user_command(bufnr, "CssToJs", css_to_js, { range = true })
   M.buf_map(bufnr, "n", "gx", ":set opfunc=v:lua.css_to_js<CR>g@")
@@ -165,14 +166,12 @@ M.config = function()
 
   ts.setup {
     disable_commands = false, -- prevent the plugin from creating Vim commands
-    disable_formatting = false, -- disable tsserver's formatting capabilities
     debug = false, -- enable debug logging for commands
     server = { -- pass options to lspconfig's setup method
       on_attach = on_attach,
       capabilities = lvim_lsp.common_capabilities(),
     },
   }
-
 end
 
 return M

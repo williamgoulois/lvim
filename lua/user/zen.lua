@@ -36,7 +36,6 @@ M.config = function()
     plugins = {
       gitsigns = { enabled = false }, -- disables git signs
       tmux = { enabled = true },
-      twilight = { enabled = true },
       kitty = {
         enabled = false,
         font = "+2", -- font size increment
