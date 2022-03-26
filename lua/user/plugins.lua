@@ -1,6 +1,9 @@
 local M = {}
 
 M.config = function()
+  -- -- bug with plenary
+  -- vim.fn.setenv("MACOSX_DEPLOYMENT_TARGET", "10.15")
+
   local neoclip_req = { "kkharji/sqlite.lua" }
   if lvim.builtin.neoclip.enable_persistent_history == false then
     neoclip_req = {}
@@ -17,6 +20,21 @@ M.config = function()
     --     return (_time.hour >= 9 and _time.hour < 17) and lvim.builtin.time_based_themes
     --   end,
     -- },
+    { "andreshazard/vim-freemarker", ft = "freemarker" },
+    { "christoomey/vim-tmux-navigator" },
+    {
+      "mg979/vim-visual-multi",
+      config = function()
+        require("user.visual_multi").config()
+      end,
+      branch = "master",
+    },
+    {
+      url = "https://gitlab.com/HiPhish/rainbow-delimiters.nvim.git",
+      config = function()
+        require("user.rainbow_delimiters").config()
+      end,
+    },
     {
       "rose-pine/neovim",
       name = "rose-pine",
@@ -54,12 +72,19 @@ M.config = function()
       end,
     },
     {
-      "ray-x/lsp_signature.nvim",
+      "kylechui/nvim-surround",
       config = function()
-        require("user/lsp_signature").config()
+        require("nvim-surround").setup {}
       end,
-      event = { "BufRead", "BufNew" },
     },
+    { "lunarvim/darkplus.nvim" },
+    -- {
+    --   "ray-x/lsp_signature.nvim",
+    --   config = function()
+    --     require("user/lsp_signature").config()
+    --   end,
+    --   event = { "BufRead", "BufNew" },
+    -- },
     {
       "vladdoster/remember.nvim",
       config = function()
@@ -88,6 +113,7 @@ M.config = function()
       end,
       event = "VeryLazy",
       cmd = "Trouble",
+      enabled = lvim.builtin.trouble.active,
     },
     {
       "ggandor/leap.nvim",
@@ -130,27 +156,10 @@ M.config = function()
       enabled = lvim.builtin.tabnine.active,
     },
     {
-      "folke/twilight.nvim",
-      lazy = true,
-      config = function()
-        require("user.twilight").config()
-      end,
-    },
-    {
       "kevinhwang91/nvim-bqf",
       event = "WinEnter",
       config = function()
         require("user.bqf").config()
-      end,
-    },
-    {
-      "andymass/vim-matchup",
-      event = "BufReadPost",
-      config = function()
-        vim.g.matchup_enabled = 1
-        vim.g.matchup_surround_enabled = 1
-        vim.g.matchup_matchparen_deferred = 1
-        vim.g.matchup_matchparen_offscreen = { method = "popup" }
       end,
     },
     {
@@ -372,11 +381,12 @@ M.config = function()
       config = function()
         require("cinnamon").setup {
           default_keymaps = true,
-          default_delay = 4,
+          default_delay = 3,
           extra_keymaps = true,
           extended_keymaps = false,
           centered = true,
           scroll_limit = 100,
+          max_length = 500,
         }
       end,
       event = "BufRead",
@@ -624,6 +634,28 @@ M.config = function()
       cmd = "Neotree",
       dependencies = {
         "MunifTanjim/nui.nvim",
+        {
+          -- only needed if you want to use the commands with "_with_window_picker" suffix
+          "s1n7ax/nvim-window-picker",
+          version = "v1.*",
+          config = function()
+            require("window-picker").setup {
+              autoselect_one = true,
+              include_current = false,
+              filter_rules = {
+                -- filter using buffer options
+                bo = {
+                  -- if the file type is one of following, the window will be ignored
+                  filetype = { "neo-tree", "neo-tree-popup", "notify" },
+
+                  -- if the buffer type is one of following, the window will be ignored
+                  buftype = { "terminal", "quickfix" },
+                },
+              },
+              other_win_hl_color = "#e35e4f",
+            }
+          end,
+        },
       },
       config = function()
         require("user.neotree").config()

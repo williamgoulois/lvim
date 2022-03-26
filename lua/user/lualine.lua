@@ -170,7 +170,9 @@ M.config = function()
     check_git_workspace = function()
       local filepath = vim.fn.expand "%:p:h"
       local gitdir = vim.fn.finddir(".git", filepath .. ";")
-      return gitdir and #gitdir > 0 and #gitdir < #filepath
+      -- Added to support git worktrees
+      local gitfile = vim.fn.findfile(".git", filepath .. ";")
+      return (gitdir and #gitdir > 0 and #gitdir < #filepath) or (gitfile and #gitfile > 0 and #gitfile < #filepath)
     end,
   }
 
@@ -304,6 +306,7 @@ M.config = function()
     color = "LualineFileIconColor",
   }
 
+  -- was commented
   ins_left {
     function()
       local fname = vim.fn.expand "%:p"
@@ -343,7 +346,9 @@ M.config = function()
       end
       return show_name .. readonly .. modified
     end,
-    cond = conditions.buffer_not_empty and conditions.hide_small,
+    cond = function()
+      return false
+    end,
     padding = { left = 1, right = 1 },
     color = { fg = colors.fg, gui = "bold", bg = colors.bg },
   }
