@@ -42,7 +42,7 @@ lvim.builtin.custom_web_devicons = false -- install https://github.com/Nguyen-Ho
 lvim.builtin.harpoon = { active = true } -- use the harpoon plugin
 lvim.builtin.remote_dev = { active = false } -- enable/disable remote development
 lvim.builtin.cursorline = { active = false } -- use a bit fancier cursorline
-lvim.builtin.motion_provider = "hop" -- change this to use different motion providers ( hop or leap )
+lvim.builtin.motion_provider = "" -- change this to use different motion providers ( hop or leap )
 lvim.builtin.hlslens = { active = false } -- enable/disable hlslens
 lvim.builtin.csv_support = false -- enable/disable csv support
 lvim.builtin.sidebar = { active = false } -- enable/disable sidebar
@@ -95,8 +95,7 @@ end
 -- Additional Actions Based on Custom User Config
 -- =========================================
 
-if user and user == "williamgoulois" then
-  print "Custom config"
+if user and user == "William.Goulois" then
   lvim.builtin.web_programming.active = true
   lvim.builtin.go_programming.active = false
   lvim.builtin.python_programming.active = false
@@ -123,7 +122,8 @@ if user and user == "williamgoulois" then
   lvim.builtin.test_runner = { active = true, runner = "neotest" } -- change this to enable/disable ultest or neotest
   lvim.builtin.cheat = { active = false } -- enable/disable cheat.sh integration
   lvim.builtin.sql_integration = { active = true } -- use sql integration
-  lvim.builtin.smooth_scroll = "cinnamon" -- for smoth scrolling, can be "cinnamon", "neoscroll" or ""
+  -- TODO: this appears to be buggy with key repeat on mac
+  lvim.builtin.smooth_scroll = "" -- for smoth scrolling, can be "cinnamon", "neoscroll" or ""
   lvim.builtin.custom_web_devicons = true -- install https://github.com/Nguyen-Hoang-Nam/mini-file-icons
   lvim.builtin.harpoon = { active = false } -- use the harpoon plugin
 
