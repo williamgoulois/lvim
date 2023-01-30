@@ -126,13 +126,15 @@ if user and user == "William.Goulois" then
   lvim.builtin.dressing = { active = true } -- enable to override vim.ui.input and vim.ui.select with telescope
   lvim.builtin.indentlines.active = false
 
-  lvim.builtin.tmux_lualine = false -- WARN: doesn't work with neovim nightly
+  lvim.builtin.tmux_lualine = true -- WARN: doesn't work with neovim nightly
   if lvim.builtin.tmux_lualine then
     vim.opt.cmdheight = 0
     vim.opt.laststatus = 0
     vim.g.tpipeline_cursormoved = 1
-    -- TODO: removed ?
-    -- vim.g.tpipeline_clearstl = 1
+    -- HACK: lualine hijacks the statusline, so we need to set it back to what we want
+    if vim.env.TMUX then
+      vim.cmd [[ autocmd WinEnter,BufEnter,VimResized * setlocal laststatus=0 ]]
+    end
   end
 
   lvim.builtin.lsp_lines = true -- enable/disable lsp_lines to display lsp virtual text below instead of behind
@@ -146,7 +148,7 @@ if user and user == "William.Goulois" then
 
   lvim.builtin.treesitter.rainbow.enable = true
   -- lvim.builtin.notify.opts.level = "WARN" -- hover with multiple lsp servers produces info
-  -- lvim.builtin.noice.active = true # WARN: https://github.com/folke/noice.nvim/issues/298
+  lvim.builtin.noice.active = true -- WARN: https://github.com/folke/noice.nvim/issues/298
 
   lvim.format_on_save = {
     pattern = "*.rs",
@@ -176,18 +178,12 @@ lvim.builtin.latex = {
   active = false, -- set to true to enable
 }
 
--- TODO: verify cause deleted
--- lvim.builtin.notify.active = true
--- lvim.lsp.automatic_servers_installation = false
-
 if lvim.builtin.cursorline.active then
   lvim.lsp.document_highlight = false
 end
 
 -- Override Lunarvim defaults
 -- =========================================
--- TODO: verify cause deleted
--- lvim.lsp.code_lens_refresh = true
 
 -- LunarVim builtin config
 -- =========================================
@@ -231,7 +227,7 @@ require("user.null_ls").config()
 require("user.plugins").config()
 
 -- FIXME Bug with multiple lsp and hover
--- require("notify").setup { level = "WARN" }
+require("notify").setup { level = "WARN" }
 
 -- Autocommands
 -- =========================================
