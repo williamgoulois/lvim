@@ -107,10 +107,10 @@ if user and user == "William.Goulois" then
   -- vim.api.nvim_set_hl(0, "DiffDelete", { fg = "#ffdf87", bg = "#262626", reverse = true })
   -- vim.api.nvim_set_hl(0, "DiffText", { fg = "#afafaf", bg = "#262626", reverse = true })
   -- WARN: these only work on neovim head
-  vim.opt.mousescroll = { "ver:1", "hor:6" }
-  vim.o.mousefocus = true
-  vim.o.mousemoveevent = true
-  vim.o.splitkeep = "screen"
+  -- vim.opt.mousescroll = { "ver:1", "hor:6" }
+  -- vim.o.mousefocus = true
+  -- vim.o.mousemoveevent = true
+  -- vim.o.splitkeep = "screen"
   ---
 
   lvim.builtin.trouble = { active = false } -- enable/disable trouble for diagnostics
@@ -137,8 +137,7 @@ if user and user == "William.Goulois" then
     vim.opt.cmdheight = 0
     vim.opt.laststatus = 0
     vim.g.tpipeline_cursormoved = 1
-    -- TODO: removed ?
-    -- vim.g.tpipeline_clearstl = 1
+    vim.g.tpipeline_clearstl = 1
   end
 
   lvim.builtin.lsp_lines = true -- enable/disable lsp_lines to display lsp virtual text below instead of behind
@@ -152,7 +151,7 @@ if user and user == "William.Goulois" then
 
   lvim.builtin.treesitter.rainbow.enable = true
   -- lvim.builtin.notify.opts.level = "WARN" -- hover with multiple lsp servers produces info
-  -- lvim.builtin.noice.active = true # WARN: https://github.com/folke/noice.nvim/issues/298
+  lvim.builtin.noice.active = true -- WARN: https://github.com/folke/noice.nvim/issues/298
 
   lvim.format_on_save = {
     pattern = "*.rs",
@@ -181,18 +180,12 @@ lvim.builtin.latex = {
   rtl_support = true, -- if you want to use xelatex, it's a bit slower but works very well for RTL langs
 }
 
--- TODO: verify cause deleted
--- lvim.builtin.notify.active = true
--- lvim.lsp.automatic_servers_installation = false
-
 if lvim.builtin.cursorline.active then
   lvim.lsp.document_highlight = false
 end
 
 -- Override Lunarvim defaults
 -- =========================================
--- TODO: verify cause deleted
--- lvim.lsp.code_lens_refresh = true
 
 -- LunarVim builtin config
 -- =========================================
@@ -236,7 +229,7 @@ require("user.null_ls").config()
 require("user.plugins").config()
 
 -- FIXME Bug with multiple lsp and hover
--- require("notify").setup { level = "WARN" }
+require("notify").setup { level = "WARN" }
 
 -- Autocommands
 -- =========================================
