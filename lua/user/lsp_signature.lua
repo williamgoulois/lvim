@@ -7,6 +7,7 @@ M.config = function()
   end
 
   local cfg = {
+    cursorhold_update = false, -- this is needed until https://github.com/ray-x/lsp_signature.nvim/issues/260 is fixed
     bind = true,
     doc_lines = 10,
     floating_window = true, -- show hint in a floating window, set to false for virtual text only mode
