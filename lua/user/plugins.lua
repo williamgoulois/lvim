@@ -77,13 +77,13 @@ M.config = function()
       end,
     },
     { "lunarvim/darkplus.nvim" },
-    {
-      "ray-x/lsp_signature.nvim",
-      config = function()
-        require("user/lsp_signature").config()
-      end,
-      event = { "BufRead", "BufNew" },
-    },
+    -- {
+    --   "ray-x/lsp_signature.nvim",
+    --   config = function()
+    --     require("user/lsp_signature").config()
+    --   end,
+    --   event = { "BufRead", "BufNew" },
+    -- },
     {
       "vladdoster/remember.nvim",
       config = function()
