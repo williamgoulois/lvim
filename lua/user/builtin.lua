@@ -890,7 +890,7 @@ M.lsp_on_attach_callback = function(client, _)
     end
   elseif client.name == "tsserver" then
     mappings["lA"] = { "<Cmd>TSLspImportAll<CR>", "Import All" }
-    mappings["lR"] = { "<Cmd>TSLspRenameFile<CR>", "Rename File" }
+    mappings["lR"] = { "<Cmd>LspRestart<CR>", "Restart server" }
     mappings["lO"] = { "<Cmd>TSLspOrganize<CR>", "Organize Imports" }
     mappings["li"] = { "<cmd>TypescriptAddMissingImports<Cr>", "AddMissingImports" }
     mappings["lo"] = { "<cmd>TypescriptOrganizeImports<cr>", "OrganizeImports" }

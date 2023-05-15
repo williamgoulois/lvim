@@ -119,6 +119,7 @@ if user and user == "William.Goulois" then
   lvim.builtin.test_runner = { active = true, runner = "neotest" } -- change this to enable/disable ultest or neotest
   lvim.builtin.cheat = { active = false } -- enable/disable cheat.sh integration
   lvim.builtin.sql_integration = { active = true } -- use sql integration
+  -- postgres://user:secret@localhost:5432/mydatabasename
   lvim.builtin.smooth_scroll = "" -- for smoth scrolling, can be "cinnamon", "neoscroll" or ""
   lvim.builtin.custom_web_devicons = true -- install https://github.com/Nguyen-Hoang-Nam/mini-file-icons
   lvim.builtin.harpoon = { active = false } -- use the harpoon plugin
@@ -160,6 +161,12 @@ if user and user == "William.Goulois" then
 
   lvim.builtin.borderless_cmp = true
   lvim.builtin.colored_args = true
+
+  vim.g.db_ui_use_nerd_fonts = true
+  vim.g.db_ui_show_database_icon = true
+  vim.g.db_ui_win_position = 'right'
+  vim.g.db_ui_auto_execute_table_helpers = true
+  vim.g.db_ui_execute_on_save = false
 end
 
 if lvim.builtin.winbar_provider == "navic" then
