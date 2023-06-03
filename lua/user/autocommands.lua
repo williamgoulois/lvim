@@ -71,6 +71,14 @@ M.config = function()
   --     autocmd BufReadPre,FileReadPre * if getfsize(expand("%")) > 1024 * 1024 | exec DisableSyntaxTreesitter() | endif
   -- augroup END
   --   ]]
+  create_aucmd("WinLeave", {
+    group = "_lvim_user",
+    desc = "Fix Telescope insert mode",
+    callback = function()
+		if vim.bo.ft == "TelescopePrompt" and vim.fn.mode() == "i" then
+			vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "i", false)
+		end
+	end,  })
   create_aucmd("BufWinEnter", {
     group = "_lvim_user",
     pattern = "*.md",
