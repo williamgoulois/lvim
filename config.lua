@@ -139,9 +139,7 @@ if user and user == "William.Goulois" then
   end
 
   lvim.builtin.lsp_lines = true -- enable/disable lsp_lines to display lsp virtual text below instead of behind
-  lvim.lsp.diagnostics.virtual_text = true --remove this line if you want to see inline errors
   if lvim.builtin.lsp_lines then
-    lvim.lsp.diagnostics.virtual_text = false
     vim.diagnostic.config { virtual_lines = false } -- i only want to use it explicitly ( by calling the toggle function)
   end
 
@@ -162,7 +160,7 @@ if user and user == "William.Goulois" then
 
   vim.g.db_ui_use_nerd_fonts = true
   vim.g.db_ui_show_database_icon = true
-  vim.g.db_ui_win_position = 'right'
+  vim.g.db_ui_win_position = "right"
   vim.g.db_ui_auto_execute_table_helpers = true
   vim.g.db_ui_execute_on_save = false
 end
