@@ -43,16 +43,16 @@ M.default_diagnostic_config = {
       { " ", "FloatBorder" },
       { " ", "FloatBorder" },
     },
-    format = function(d)
-      local t = vim.deepcopy(d)
-      local code = d.code or (d.user_data and d.user_data.lsp.code)
-      for _, table in pairs(M.codes) do
-        if vim.tbl_contains(table, code) then
-          return table.message
-        end
-      end
-      return t.message
-    end,
+    -- format = function(d)
+    --   local t = vim.deepcopy(d)
+    --   local code = d.code or (d.user_data and d.user_data.lsp.code)
+    --   for _, table in pairs(M.codes) do
+    --     if vim.tbl_contains(table, code) then
+    --       return table.message
+    --     end
+    --   end
+    --   return t.message
+    -- end,
   },
 }
 

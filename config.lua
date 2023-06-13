@@ -107,7 +107,7 @@ if user and user == "William.Goulois" then
   vim.o.splitkeep = "screen"
   ---
 
-  lvim.builtin.trouble = { active = false } -- enable/disable trouble for diagnostics
+  lvim.builtin.trouble = { active = true } -- enable/disable trouble for diagnostics
   lvim.builtin.persistence = { active = true } -- change to false if you don't want persistence
   lvim.builtin.dap.active = true -- change this to enable/disable debugging
   lvim.builtin.fancy_wild_menu = { active = true } -- enable/disable cmp-cmdline
