@@ -20,6 +20,7 @@ M.config = function()
     --     return (_time.hour >= 9 and _time.hour < 17) and lvim.builtin.time_based_themes
     --   end,
     -- },
+    { "andreshazard/vim-freemarker", ft = "freemarker" },
     { "christoomey/vim-tmux-navigator" },
     {
       "mg979/vim-visual-multi",
