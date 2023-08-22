@@ -89,7 +89,6 @@ end
 -- =========================================
 
 if user and user == "William.Goulois" then
-  lvim.builtin.inlay_hints.active = true
   lvim.reload_config_on_save = false -- NOTE: i don't like this
   lvim.builtin.web_programming.active = true
   lvim.builtin.go_programming.active = false
