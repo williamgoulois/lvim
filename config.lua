@@ -144,7 +144,6 @@ if user and user == "William.Goulois" then
 
   lvim.builtin.tree_provider = "neo-tree" -- can be "neo-tree" or "nvimtree" or ""
 
-  lvim.builtin.treesitter.rainbow.enable = true
   -- lvim.builtin.notify.opts.level = "WARN" -- hover with multiple lsp servers produces info
   lvim.builtin.noice.active = true -- WARN: https://github.com/folke/noice.nvim/issues/298
 

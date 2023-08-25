@@ -30,9 +30,9 @@ M.config = function()
       branch = "master",
     },
     {
-      "p00f/nvim-ts-rainbow",
+      url = "https://gitlab.com/HiPhish/rainbow-delimiters.nvim.git",
       config = function()
-        require("user.ts_rainbow").config()
+        require("user.rainbow_delimiters").config()
       end,
     },
     {
