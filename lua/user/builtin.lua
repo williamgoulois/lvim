@@ -404,7 +404,7 @@ M.config = function()
       node_decremental = "<C-r>",
     },
   }
-  lvim.builtin.treesitter.matchup.enable = true
+  lvim.builtin.treesitter.matchup.enable = false
   -- lvim.treesitter.textsubjects.enable = true
   -- lvim.treesitter.playground.enable = true
   lvim.builtin.treesitter.query_linter = {
